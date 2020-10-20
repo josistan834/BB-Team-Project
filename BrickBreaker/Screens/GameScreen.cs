@@ -78,23 +78,6 @@ namespace BrickBreaker
                     break;
                 }
             }
-
-            // Check for ball hitting bottom of screen
-            if (ball.BottomCollision(this))
-            {
-                playerLives--; // player loses a life when they miss the ball
-                lifeLabel.Text = playerLives + ""; // display updated life count
-
-                // Moves the ball back to origin (Change to Calem's code)
-                ball.x = ((paddle.x - (ball.size / 2)) + (paddle.width / 2));
-                ball.y = (this.Height - paddle.height) - 85;
-
-                if (playerLives == 0) // end game once player is out of lives
-                {
-                    gameTimer.Enabled = false;
-                    OnEnd(); // go to game over screen 
-                }
-            }
         }
 
         public void OnStart()
@@ -162,8 +145,8 @@ namespace BrickBreaker
             // Check for ball hitting bottom of screen
             if (ball.BottomCollision(this))
             {
-                lives--;
-
+                playerLives--;
+                 lifeLabel.Text = playerLives + ""; // display updated life count
                 //Move paddle to middle
                 paddle.x = (this.Width / 2 - paddle.width);
                 // Moves the ball back to origin
@@ -171,7 +154,7 @@ namespace BrickBreaker
                 ball.y = (this.Height - paddle.height) - 85;
                 
 
-                if (lives == 0)
+                if (playerLives == 0)
                 {
                     gameTimer.Enabled = false;
                     OnEnd();
