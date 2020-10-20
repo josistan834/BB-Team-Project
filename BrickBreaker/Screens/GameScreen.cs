@@ -124,8 +124,24 @@ namespace BrickBreaker
 
             // Check for collision of ball with paddle, (incl. paddle movement)
             ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown);
-        }
 
+            // Check if ball has collided with any blocks
+            foreach (Block b in blocks)
+            {
+                if (ball.BlockCollision(b))
+                {
+                    blocks.Remove(b);
+
+                    if (blocks.Count == 0)
+                    {
+                        gameTimer.Enabled = false;
+                        OnEnd();
+                    }
+
+                    break;
+                }
+            }
+        }
 
         private void GameScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
@@ -172,23 +188,6 @@ namespace BrickBreaker
             }
 
             CalemMethod();
-
-            // Check if ball has collided with any blocks
-            foreach (Block b in blocks)
-            {
-                if (ball.BlockCollision(b))
-                {
-                    blocks.Remove(b);
-
-                    if (blocks.Count == 0)
-                    {
-                        gameTimer.Enabled = false;
-                        OnEnd();
-                    }
-
-                    break;
-                }
-            }
 
             //redraw the screen
             Refresh();

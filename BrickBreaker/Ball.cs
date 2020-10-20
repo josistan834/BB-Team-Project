@@ -74,6 +74,14 @@ namespace BrickBreaker
                     ballUp = true;
                 }
 
+                if (pMovingLeft == true)
+                {
+                    ballRight = false;
+                }
+                else
+                {
+                    ballRight = true;
+                }
             }
         }
 
