@@ -1,4 +1,5 @@
-﻿/*  Created by: 
+﻿/*  
+ *  Created by: Calem
  *  Project: Brick Breaker
  *  Date: 
  */ 
@@ -62,6 +63,7 @@ namespace BrickBreaker
             int paddleSpeed = 8;
             paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight, paddleSpeed, Color.White);
 
+            #region ball variables
             // setup starting ball values
             int ballX = this.Width / 2 - 10;
             int ballY = this.Height - paddle.height - 80;
@@ -70,12 +72,16 @@ namespace BrickBreaker
             int xSpeed = 6;
             int ySpeed = 6;
             int ballSize = 20;
-            ball = new Ball(ballX, ballY, xSpeed, ySpeed, ballSize);
+            //starts ball moving up and right
+            bool ballRight = true;
+            bool ballUp = true;
+            ball = new Ball(ballX, ballY, xSpeed, ySpeed, ballSize, ballRight, ballUp);
+            #endregion
 
             #region Creates blocks for generic level. Need to replace with code that loads levels.
-            
+
             //TODO - replace all the code in this region eventually with code that loads levels from xml files
-            
+
             blocks.Clear();
             int x = 10;
 
@@ -91,6 +97,35 @@ namespace BrickBreaker
             // start the game engine loop
             gameTimer.Enabled = true;
         }
+
+        public void CalemMethod()
+        {
+            // Move ball
+            ball.Move();
+
+            // Check for collision with top and side walls
+            ball.WallCollision(this);
+
+            // Check for ball hitting bottom of screen
+            if (ball.BottomCollision(this))
+            {
+                lives--;
+
+                // Moves the ball back to origin
+                ball.x = ((paddle.x - (ball.size / 2)) + (paddle.width / 2));
+                ball.y = (this.Height - paddle.height) - 85;
+
+                if (lives == 0)
+                {
+                    gameTimer.Enabled = false;
+                    OnEnd();
+                }
+            }
+
+            // Check for collision of ball with paddle, (incl. paddle movement)
+            ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown);
+        }
+
 
         private void GameScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
@@ -136,30 +171,7 @@ namespace BrickBreaker
                 paddle.Move("right");
             }
 
-            // Move ball
-            ball.Move();
-
-            // Check for collision with top and side walls
-            ball.WallCollision(this);
-
-            // Check for ball hitting bottom of screen
-            if (ball.BottomCollision(this))
-            {
-                lives--;
-
-                // Moves the ball back to origin
-                ball.x = ((paddle.x - (ball.size / 2)) + (paddle.width / 2));
-                ball.y = (this.Height - paddle.height) - 85;
-
-                if (lives == 0)
-                {
-                    gameTimer.Enabled = false;
-                    OnEnd();
-                }
-            }
-
-            // Check for collision of ball with paddle, (incl. paddle movement)
-            ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown);
+            CalemMethod();
 
             // Check if ball has collided with any blocks
             foreach (Block b in blocks)
