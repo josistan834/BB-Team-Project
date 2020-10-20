@@ -1,7 +1,7 @@
 ﻿/*  
  *  Created by: Calem
  *  Project: Brick Breaker
- *  Date: 
+ *  Date: 2020
  */ 
 using System;
 using System.Collections.Generic;
@@ -139,12 +139,14 @@ namespace BrickBreaker
             // Move ball
             ball.Move();
 
+            #region collisions
             // Check for collision with top and side walls
             ball.WallCollision(this);
 
             // Check for ball hitting bottom of screen
             if (ball.BottomCollision(this))
             {
+
                 playerLives--;
                  lifeLabel.Text = playerLives + ""; // display updated life count
                 //Move paddle to middle
@@ -163,8 +165,25 @@ namespace BrickBreaker
 
             // Check for collision of ball with paddle, (incl. paddle movement)
             ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown);
-        }
+           
+            // Check if ball has collided with any blocks
+            foreach (Block b in blocks)
+            {
+                if (ball.BlockCollision(b))
+                {
+                    blocks.Remove(b);
 
+                    if (blocks.Count == 0)
+                    {
+                        gameTimer.Enabled = false;
+                        OnEnd();
+                    }
+
+                    break;
+                }
+            }
+            #endregion
+        }
 
         private void GameScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
@@ -211,6 +230,7 @@ namespace BrickBreaker
             {
                 paddle.Move("right");
             }
+
 
 
             CalemMethod();
