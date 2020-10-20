@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Media;
+using System.Xml;
 
 namespace BrickBreaker
 {
@@ -46,55 +47,6 @@ namespace BrickBreaker
         {
             InitializeComponent();
             OnStart();
-        }
-
-        public void DeclanMethod()
-        {
-            // Check if ball has collided with any blocks
-            foreach (Block b in blocks)
-            {
-                if (ball.BlockCollision(b)) // block health decreases when hit by ball
-                {
-                    b.hp--;
-
-                    if (b.hp > 0) // player score increases when the ball hits a block
-                    {
-                        playerScore = playerScore + 50; // update score
-                        scoreLabel.Text = playerScore + ""; // display updated score
-                    }
-                    else if (b.hp == 0) // remove block from screen if its health is zero
-                    {
-                        playerScore = playerScore + 100; // update score
-                        scoreLabel.Text = playerScore + ""; // display updated score
-                        blocks.Remove(b);
-                    } 
-                    
-                    if (blocks.Count == 0) // go to next level if player finishes current level
-                    {
-                        gameTimer.Enabled = false;
-                        OnEnd(); 
-                    }
-
-                    break;
-                }
-            }
-
-            // Check for ball hitting bottom of screen
-            if (ball.BottomCollision(this))
-            {
-                playerLives--; // player loses a life when they miss the ball
-                lifeLabel.Text = playerLives + ""; // display updated life count
-
-                // Moves the ball back to origin (Change to Calem's code)
-                ball.x = ((paddle.x - (ball.size / 2)) + (paddle.width / 2));
-                ball.y = (this.Height - paddle.height) - 85;
-
-                if (playerLives == 0) // end game once player is out of lives
-                {
-                    gameTimer.Enabled = false;
-                    OnEnd(); // go to game over screen 
-                }
-            }
         }
 
         public void OnStart()
@@ -162,16 +114,16 @@ namespace BrickBreaker
             // Check for ball hitting bottom of screen
             if (ball.BottomCollision(this))
             {
-                lives--;
+                playerLives--;
+                lifeLabel.Text = playerLives + "";
 
                 //Move paddle to middle
                 paddle.x = (this.Width / 2 - paddle.width);
                 // Moves the ball back to origin
                 ball.x = ((paddle.x - (ball.size / 2)) + (paddle.width / 2));
-                ball.y = (this.Height - paddle.height) - 85;
-                
+                ball.y = (this.Height - paddle.height) - 85;                
 
-                if (lives == 0)
+                if (playerLives == 0)
                 {
                     gameTimer.Enabled = false;
                     OnEnd();
@@ -182,6 +134,37 @@ namespace BrickBreaker
             ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown);
         }
 
+        public void DeclanMethod()
+        {
+            // Check if ball has collided with any blocks
+            foreach (Block b in blocks)
+            {
+                if (ball.BlockCollision(b)) // block health decreases when hit by ball
+                {
+                    b.hp--;
+
+                    if (b.hp > 0) // player score increases when the ball hits a block
+                    {
+                        playerScore = playerScore + 50; // update score
+                        scoreLabel.Text = playerScore + ""; // display updated score
+                    }
+                    else if (b.hp == 0) // remove block from screen if its health is zero
+                    {
+                        playerScore = playerScore + 100; // update score
+                        scoreLabel.Text = playerScore + ""; // display updated score
+                        blocks.Remove(b);
+                    }
+
+                    if (blocks.Count == 0) // go to next level if player finishes current level
+                    {
+                        gameTimer.Enabled = false;
+                        OnEnd();
+                    }
+
+                    break;
+                }
+            }
+        }
 
         private void GameScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
@@ -239,6 +222,8 @@ namespace BrickBreaker
 
         public void OnEnd()
         {
+            HighScores();
+
             // Goes to the game over screen
             Form form = this.FindForm();
             MenuScreen ps = new MenuScreen();
@@ -263,6 +248,23 @@ namespace BrickBreaker
 
             // Draws ball
             e.Graphics.FillRectangle(ballBrush, ball.x, ball.y, ball.size, ball.size);
+        }
+
+        public void HighScores()
+        {
+            string score = Convert.ToString(playerScore);
+            // create write for xml file
+            XmlWriter writer = XmlWriter.Create("highScores.xml", null);
+
+            // start writer
+            writer.WriteStartElement("Highscores");
+
+            writer.WriteStartElement("Highscore");
+            writer.WriteElementString("score", score);
+
+            // end and close writer
+            writer.WriteEndElement();
+            writer.Close();
         }
     }
 }
