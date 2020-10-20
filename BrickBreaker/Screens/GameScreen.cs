@@ -24,7 +24,7 @@ namespace BrickBreaker
         Boolean leftArrowDown, rightArrowDown;
 
         // Game values
-        public int lives;
+        public static int lives;
 
         // Paddle and Ball objects
         Paddle paddle;
