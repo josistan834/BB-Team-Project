@@ -103,6 +103,7 @@ namespace BrickBreaker
             // Move ball
             ball.Move();
 
+            #region collisions
             // Check for collision with top and side walls
             ball.WallCollision(this);
 
@@ -126,7 +127,7 @@ namespace BrickBreaker
 
             // Check for collision of ball with paddle, (incl. paddle movement)
             ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown);
-
+           
             // Check if ball has collided with any blocks
             foreach (Block b in blocks)
             {
@@ -143,6 +144,7 @@ namespace BrickBreaker
                     break;
                 }
             }
+            #endregion
         }
 
         private void GameScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
