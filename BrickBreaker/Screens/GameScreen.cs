@@ -24,7 +24,9 @@ namespace BrickBreaker
         Boolean leftArrowDown, rightArrowDown;
 
         // Game values
-        int lives;
+        int level;
+        int playerLives;
+        int playerScore; // many need to change if player score gets too high
 
         // Paddle and Ball objects
         Paddle paddle;
@@ -46,11 +48,63 @@ namespace BrickBreaker
             OnStart();
         }
 
+        public void DeclanMethod()
+        {
+            // Check if ball has collided with any blocks
+            foreach (Block b in blocks)
+            {
+                if (ball.BlockCollision(b)) // block health decreases when hit by ball
+                {
+                    b.hp--;
+
+                    if (b.hp > 0) // player score increases when the ball hits a block
+                    {
+                        playerScore = playerScore + 50; // update score
+                        scoreLabel.Text = playerScore + ""; // display updated score
+                    }
+                    else if (b.hp == 0) // remove block from screen if its health is zero
+                    {
+                        playerScore = playerScore + 100; // update score
+                        scoreLabel.Text = playerScore + ""; // display updated score
+                        blocks.Remove(b);
+                    } 
+                    
+                    if (blocks.Count == 0) // go to next level if player finishes current level
+                    {
+                        gameTimer.Enabled = false;
+                        OnEnd(); 
+                    }
+
+                    break;
+                }
+            }
+
+            // Check for ball hitting bottom of screen
+            if (ball.BottomCollision(this))
+            {
+                playerLives--; // player loses a life when they miss the ball
+                lifeLabel.Text = playerLives + ""; // display updated life count
+
+                // Moves the ball back to origin (Change to Calem's code)
+                ball.x = ((paddle.x - (ball.size / 2)) + (paddle.width / 2));
+                ball.y = (this.Height - paddle.height) - 85;
+
+                if (playerLives == 0) // end game once player is out of lives
+                {
+                    gameTimer.Enabled = false;
+                    OnEnd(); // go to game over screen 
+                }
+            }
+        }
 
         public void OnStart()
         {
             //set life counter
-            lives = 3;
+            playerLives = 3;
+
+            // display life and score values
+            scoreLabel.Text = playerScore + "";
+            lifeLabel.Text = playerLives + "";
 
             //set all button presses to false.
             leftArrowDown = rightArrowDown = false;
@@ -81,11 +135,10 @@ namespace BrickBreaker
             #region Creates blocks for generic level. Need to replace with code that loads levels.
 
             //TODO - replace all the code in this region eventually with code that loads levels from xml files
-
             blocks.Clear();
             int x = 10;
 
-            while (blocks.Count < 12)
+            while (blocks.Count() < 12)
             {
                 x += 57;
                 Block b1 = new Block(x, 10, 1, Color.White);
@@ -164,6 +217,8 @@ namespace BrickBreaker
 
         private void gameTimer_Tick(object sender, EventArgs e)
         {
+            DeclanMethod();
+
             // Move the paddle
             if (leftArrowDown && paddle.x > 0)
             {
@@ -174,24 +229,9 @@ namespace BrickBreaker
                 paddle.Move("right");
             }
 
+
             CalemMethod();
 
-            // Check if ball has collided with any blocks
-            foreach (Block b in blocks)
-            {
-                if (ball.BlockCollision(b))
-                {
-                    blocks.Remove(b);
-
-                    if (blocks.Count == 0)
-                    {
-                        gameTimer.Enabled = false;
-                        OnEnd();
-                    }
-
-                    break;
-                }
-            }
 
             //redraw the screen
             Refresh();
