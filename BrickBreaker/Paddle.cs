@@ -53,7 +53,7 @@ namespace BrickBreaker
             {
                 if (paddleRec.IntersectsWith(powerRec))
                 {
-                    GameScreen.lives++;
+                    GameScreen.playerLives++;
                     p.x = 2000;
                 }
             }
