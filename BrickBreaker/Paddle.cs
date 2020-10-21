@@ -28,5 +28,43 @@ namespace BrickBreaker
                 x += speed;
             }
         }
+        public void PowerUpCollision(PowerUps p)
+        {
+
+            Rectangle powerRec = new Rectangle(p.x, p.y, p.width, p.height);
+            Rectangle paddleRec = new Rectangle(x, y, width, height);
+            if (p.power == "longPaddle")
+            {
+                if (paddleRec.IntersectsWith(powerRec))
+                {
+                    width += 40;
+                    p.x = 2000;
+                }
+            }
+            else if (p.power == "shortPaddle")
+            {
+                if (paddleRec.IntersectsWith(powerRec))
+                {
+                    width -= 40;
+                    p.x = 2000;
+                }
+            }
+            else if (p.power == "extraLife")
+            {
+                if (paddleRec.IntersectsWith(powerRec))
+                {
+                    GameScreen.playerLives++;
+                    p.x = 2000;
+                }
+            }
+            else if (p.power == "fastPaddle")
+            {
+                if (paddleRec.IntersectsWith(powerRec))
+                {
+                    GameScreen.paddleSpeed += 30;
+                    p.x = 2000;
+                }
+            }
+        }
     }
 }
