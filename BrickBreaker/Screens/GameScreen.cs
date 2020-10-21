@@ -270,7 +270,7 @@ namespace BrickBreaker
 
                 case Keys.P:
                     pArrowDown = true;
-
+                    break;
                 case Keys.Up:
                     upArrowDown = true;
 
@@ -291,13 +291,11 @@ namespace BrickBreaker
                 case Keys.Right:
                     rightArrowDown = false;
                     break;
-
                 case Keys.P:
                     pArrowDown = false;
-
+                    break;
                 case Keys.Up:
                     upArrowDown = false;
-
                     break;
                 default:
                     break;
@@ -322,13 +320,6 @@ namespace BrickBreaker
             }
         }
 
-
-        private void gameTimer_Tick(object sender, EventArgs e)
-        {
-            // Move ball
-            ball.Move();
-            // Move the paddle
-            if (leftArrowDown && paddle.x > 0)
 
         public void JordanMethod()
         {
