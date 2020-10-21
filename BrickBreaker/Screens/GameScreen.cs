@@ -252,7 +252,9 @@ namespace BrickBreaker
 
         public void HighScores()
         {
+            // convert player's score to a string
             string score = Convert.ToString(playerScore);
+
             // create write for xml file
             XmlWriter writer = XmlWriter.Create("highScores.xml", null);
 
