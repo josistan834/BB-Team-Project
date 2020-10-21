@@ -3,8 +3,10 @@
  *  Created by: Calem, Declan, Kyle, Jordan, Josiah, Phaedra
 
  *  Project: Brick Breaker
+
  *  Date: Oct, 2020 
  */ 
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,7 +27,11 @@ namespace BrickBreaker
         #region global values
 
         //player1 button control keys - DO NOT CHANGE
-        Boolean leftArrowDown, rightArrowDown, upArrowDown;
+
+        Boolean leftArrowDown, rightArrowDown, pArrowDown, upArrowDown;
+        Boolean stop = false;
+
+
 
         // Game values
         int level;
@@ -77,6 +83,7 @@ namespace BrickBreaker
         public GameScreen()
         {
             InitializeComponent();
+            Form1.seagulSound.Stop();
             OnStart();
         }
 
@@ -122,7 +129,7 @@ namespace BrickBreaker
             lifeLabel.Text = playerLives + "";
 
             //set all button presses to false.
-            leftArrowDown = rightArrowDown = false;
+            leftArrowDown = rightArrowDown = pArrowDown = false;
 
             // setup starting paddle values and create paddle object
             int paddleWidth = 80;
@@ -154,6 +161,7 @@ namespace BrickBreaker
             #region Creates blocks for generic level. Need to replace with code that loads levels.
 
             //TODO - replace all the code in this region eventually with code that loads levels from xml files
+
             blocks.Clear();
             int x = 10;
 
@@ -259,8 +267,13 @@ namespace BrickBreaker
                 case Keys.Right:
                     rightArrowDown = true;
                     break;
+
+                case Keys.P:
+                    pArrowDown = true;
+
                 case Keys.Up:
                     upArrowDown = true;
+
                     break;
                 default:
                     break;
@@ -278,19 +291,51 @@ namespace BrickBreaker
                 case Keys.Right:
                     rightArrowDown = false;
                     break;
+
+                case Keys.P:
+                    pArrowDown = false;
+
                 case Keys.Up:
                     upArrowDown = false;
+
                     break;
                 default:
                     break;
             }
         }
 
+
+        public void pause()
+        {
+            pArrowDown = false;
+            gameTimer.Stop();
+            stop = true;
+
+            if (stop == true)
+            {
+                if (pArrowDown == true)
+                {
+                    stop = false;
+                    gameTimer.Start();
+
+                }
+            }
+        }
+
+
+        private void gameTimer_Tick(object sender, EventArgs e)
+        {
+            // Move ball
+            ball.Move();
+            // Move the paddle
+            if (leftArrowDown && paddle.x > 0)
+
         public void JordanMethod()
         {
 
             powerPick = randJord.Next(1, 5);
             if (powerPick == 1)
+
             {
                 PowerUps extraLife = new PowerUps(ball.x, ball.y, 20, 20, "extraLife");
                 powers.Add(extraLife);
@@ -300,6 +345,7 @@ namespace BrickBreaker
                 PowerUps longPaddle = new PowerUps(ball.x, ball.y, 20, 20, "longPaddle");
                 powers.Add(longPaddle);
             }
+
             else if (powerPick == 3)
             {
                 PowerUps shortPaddle = new PowerUps(ball.x, ball.y, 20, 20, "shortPaddle");
@@ -319,6 +365,7 @@ namespace BrickBreaker
             {
                 powers[i].y += 5;
                 if (powers[i].y > this.Height - 30)
+
                 {
                     powers.RemoveAt(i);
                 }
@@ -336,6 +383,7 @@ namespace BrickBreaker
             // Move the paddle
             if (leftArrowDown && paddle.x > 0)
             {
+
                 paddle.Move("left");
             }
             if (rightArrowDown && paddle.x < (this.Width - paddle.width))
@@ -344,7 +392,17 @@ namespace BrickBreaker
             }
 
 
+
             CalemMethod();
+
+
+
+
+            if (pArrowDown == true)
+            {
+                pause();
+
+            }
 
 
             //redraw the screen
@@ -355,11 +413,11 @@ namespace BrickBreaker
         {
             // Goes to the game over screen
             Form form = this.FindForm();
-            MenuScreen ps = new MenuScreen();
-            
-            ps.Location = new Point((form.Width - ps.Width) / 2, (form.Height - ps.Height) / 2);
+            GameOverScreen go = new GameOverScreen();
 
-            form.Controls.Add(ps);
+            go.Location = new Point((form.Width - go.Width) / 2, (form.Height - go.Height) / 2);
+
+            form.Controls.Add(go);
             form.Controls.Remove(this);
         }
 
