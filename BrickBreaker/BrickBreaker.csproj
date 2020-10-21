@@ -143,7 +143,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="Resources\highScores.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
