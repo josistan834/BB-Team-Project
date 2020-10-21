@@ -1,7 +1,7 @@
 ﻿/*  
  *  Created by: Calem, Declan, Kyle, Jordan, Josiah, Phaedra
  *  Project: Brick Breaker
- *  Date: Oct, 2020
+ *  Date: Oct, 2020 
  */ 
 using System;
 using System.Collections.Generic;
