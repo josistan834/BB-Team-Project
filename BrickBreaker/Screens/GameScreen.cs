@@ -280,17 +280,13 @@ namespace BrickBreaker
             pArrowDown = false;
             gameTimer.Stop();
             stop = true;
+            label1.Visible = true;
+            playButton.Visible = true;
+            exitButton.Visible = true;
+            playButton.Focus();
 
-            if (stop == true)
-            {
-                if (pArrowDown == true)
-                {
-                    stop = false;
-                    gameTimer.Start();
-
-                }
-            }
         }
+
 
         public void JordanMethod()
         {
@@ -319,6 +315,33 @@ namespace BrickBreaker
                 powers.Add(fastPaddle);
             }
         }
+
+        private void playButton_Click(object sender, EventArgs e)
+        {
+            label1.Visible = false;
+            playButton.Visible = false;
+            exitButton.Visible = false;
+            gameTimer.Start();
+            this.Focus();
+        }
+
+        private void exitButton_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void playenter(object sender, EventArgs e)
+        {
+            exitButton.BackColor = Color.MediumSpringGreen;
+            playButton.BackColor = Color.PaleTurquoise;
+        }
+
+        private void exitenter(object sender, EventArgs e)
+        {
+            playButton.BackColor = Color.MediumSpringGreen;
+            exitButton.BackColor = Color.PaleTurquoise;
+        }
+
         private void gameTimer_Tick(object sender, EventArgs e)
         {
             #region PowerUp
