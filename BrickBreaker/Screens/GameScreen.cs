@@ -25,6 +25,7 @@ namespace BrickBreaker
 
         // Game values
         public static int lives;
+        public static int paddleSpeed;
 
         // Paddle and Ball objects
         Paddle paddle;
@@ -40,6 +41,7 @@ namespace BrickBreaker
         SolidBrush extraLifeBrush = new SolidBrush(Color.Green);
         SolidBrush longPaddleBrush = new SolidBrush(Color.White);
         SolidBrush shortPaddleBrush = new SolidBrush(Color.Red);
+        SolidBrush fastPaddleBrush = new SolidBrush(Color.Yellow);
 
         // Jordan Var
 
@@ -69,7 +71,7 @@ namespace BrickBreaker
             int paddleHeight = 20;
             int paddleX = ((this.Width / 2) - (paddleWidth / 2));
             int paddleY = (this.Height - paddleHeight) - 60;
-            int paddleSpeed = 8;
+            paddleSpeed = 8;
             paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight, paddleSpeed, Color.White);
 
             // setup starting ball values
@@ -143,7 +145,7 @@ namespace BrickBreaker
         public void JordanMethod()
         {
 
-            powerPick = randJord.Next(1, 4);
+            powerPick = randJord.Next(1, 5);
             if (powerPick == 1)
             {
                 PowerUps extraLife = new PowerUps(ball.x, ball.y, 20, 20, "extraLife");
@@ -158,6 +160,11 @@ namespace BrickBreaker
             {
                 PowerUps shortPaddle = new PowerUps(ball.x, ball.y, 20, 20, "shortPaddle");
                 powers.Add(shortPaddle);
+            }
+            else if (powerPick == 4)
+            {
+                PowerUps fastPaddle = new PowerUps(ball.x, ball.y, 20, 20, "fastPaddle");
+                powers.Add(fastPaddle);
             }
         }
         private void gameTimer_Tick(object sender, EventArgs e)
@@ -199,6 +206,7 @@ namespace BrickBreaker
             {
                 lives--;
                 paddle.width = 80;
+                paddleSpeed = 8;
                 // Moves the ball back to origin
                 ball.x = ((paddle.x - (ball.size / 2)) + (paddle.width / 2));
                 ball.y = (this.Height - paddle.height) - 85;
@@ -279,6 +287,10 @@ namespace BrickBreaker
                 else if (p.power == "shortPaddle")
                 {
                     e.Graphics.FillEllipse(shortPaddleBrush, p.x, p.y, p.width, p.height);
+                }
+                else if (p.power == "fastPaddle")
+                {
+                    e.Graphics.FillEllipse(fastPaddleBrush, p.x, p.y, p.width, p.height);
                 }
             }
             

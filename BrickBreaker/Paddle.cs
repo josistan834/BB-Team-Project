@@ -54,6 +54,15 @@ namespace BrickBreaker
                 if (paddleRec.IntersectsWith(powerRec))
                 {
                     GameScreen.lives++;
+                    p.x = 2000;
+                }
+            }
+            else if (p.power == "fastPaddle")
+            {
+                if (paddleRec.IntersectsWith(powerRec))
+                {
+                    GameScreen.paddleSpeed += 30;
+                    p.x = 2000;
                 }
             }
         }
