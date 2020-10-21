@@ -41,6 +41,10 @@ namespace BrickBreaker
         SolidBrush ballBrush = new SolidBrush(Color.White);
         SolidBrush blockBrush = new SolidBrush(Color.Red);
 
+        //List that will build highscores using a class to then commit them to a XML file
+        List<score> highScoreList = new List<score>();
+        string highScore;
+
         #endregion
 
         public GameScreen()
@@ -222,7 +226,8 @@ namespace BrickBreaker
 
         public void OnEnd()
         {
-            HighScores();
+            HighScoreRead();
+            HighScoreWrite();
 
             // Goes to the game over screen
             Form form = this.FindForm();
@@ -250,19 +255,50 @@ namespace BrickBreaker
             e.Graphics.FillRectangle(ballBrush, ball.x, ball.y, ball.size, ball.size);
         }
 
-        public void HighScores()
+        public void HighScoreRead()
         {
-            // convert player's score to a string
-            string score = Convert.ToString(playerScore);
+            XmlReader reader = XmlReader.Create("highScores.xml", null);
 
+            while (reader.Read())
+            {
+                if (reader.NodeType == XmlNodeType.Text)
+                {
+                    reader.ReadToNextSibling("score");
+                    string numScore = reader.ReadString();
+
+                    score s = new score(numScore);
+                    highScoreList.Add(s);
+
+                    //highScoreLabel.Text += s.numScore + "\n";
+                }
+            }
+            
+            // remove the lowest high score if there are already 10 scores when adding a new score 
+            if (highScoreList.Count > 10)
+            {
+                highScoreList.RemoveAt(10);
+            }
+
+            reader.Close();
+        }
+
+        public void HighScoreWrite()
+        {
             // create write for xml file
-            XmlWriter writer = XmlWriter.Create("highScores.xml", null);
+            XmlWriter writer = XmlWriter.Create("highScores.xml", null);          
 
             // start writer
             writer.WriteStartElement("Highscores");
 
-            writer.WriteStartElement("Highscore");
-            writer.WriteElementString("score", score);
+            // write every score in high score list
+            foreach (score s in highScoreList)
+            {
+                writer.WriteStartElement("playerScore");
+
+                writer.WriteElementString("score", s.numScore);
+
+                writer.WriteEndElement();
+            }
 
             // end and close writer
             writer.WriteEndElement();
