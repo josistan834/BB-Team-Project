@@ -7,24 +7,44 @@ namespace BrickBreaker
     public class Ball
     {
         public int x, y, xSpeed, ySpeed, size;
+        public Boolean ballRight, ballUp;
         public Color colour;
 
         public static Random rand = new Random();
 
-        public Ball(int _x, int _y, int _xSpeed, int _ySpeed, int _ballSize)
+        public Ball(int _x, int _y, int _xSpeed, int _ySpeed, int _ballSize, bool _ballRight, bool _ballUp)
         {
             x = _x;
             y = _y;
             xSpeed = _xSpeed;
             ySpeed = _ySpeed;
             size = _ballSize;
-               
+            ballRight = _ballRight;
+            ballUp = _ballUp;
+
         }
 
         public void Move()
-        {
-            x = x + xSpeed;
-            y = y + ySpeed;
+        { 
+            //ball goes left/right
+            if (ballRight == true)
+            {
+                x = x + xSpeed;
+            }
+            else
+            {
+                x = x - xSpeed;
+            }
+
+            // ball goes up/down
+            if (ballUp == true)
+            {
+                y = y - ySpeed;
+            }
+            else
+            {
+                y = y + ySpeed;
+            }
         }
 
         public bool BlockCollision(Block b)
@@ -34,7 +54,8 @@ namespace BrickBreaker
 
             if (ballRec.IntersectsWith(blockRec))
             {
-                ySpeed *= -1;
+                //ball changes up/down direction
+                ballUp = !ballUp;
             }
 
             return blockRec.IntersectsWith(ballRec);         
@@ -47,34 +68,38 @@ namespace BrickBreaker
 
             if (ballRec.IntersectsWith(paddleRec))
             {
+                //ball hits paddle, goes up
                 if (y + size >= p.y)
                 {
-                    ySpeed *= -1;
+                    ballUp = true;
                 }
 
-                if (pMovingLeft)
-                    xSpeed = -Math.Abs(xSpeed);
-                else if (pMovingRight)
-                    xSpeed = Math.Abs(xSpeed);
+                if (pMovingLeft == true)
+                {
+                    ballRight = false;
+                }
+                else
+                {
+                    ballRight = true;
+                }
             }
         }
 
         public void WallCollision(UserControl UC)
         {
-            // Collision with left wall
-            if (x <= 0)
+            // Collision with left wall, goes right
+            if (x <= 1)
             {
-                xSpeed *= -1;
+                ballRight = true;
             }
-            // Collision with right wall
-            if (x >= (UC.Width - size))
+            else if (x >= (UC.Width - size))
             {
-                xSpeed *= -1;
+                ballRight = false;
             }
-            // Collision with top wall
+            // Collision with top wall, goes down
             if (y <= 2)
             {
-                ySpeed *= -1;
+                ballUp = false;
             }
         }
 
@@ -89,6 +114,8 @@ namespace BrickBreaker
 
             return didCollide;
         }
+
+        
 
     }
 }

@@ -30,6 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             this.gameTimer = new System.Windows.Forms.Timer(this.components);
+            this.scoreLabel = new System.Windows.Forms.Label();
+            this.lifeLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // gameTimer
@@ -38,8 +40,31 @@
             this.gameTimer.Interval = 1;
             this.gameTimer.Tick += new System.EventHandler(this.gameTimer_Tick);
             // 
+            // scoreLabel
+            // 
+            this.scoreLabel.BackColor = System.Drawing.Color.Transparent;
+            this.scoreLabel.Font = new System.Drawing.Font("Comic Sans MS", 30F);
+            this.scoreLabel.ForeColor = System.Drawing.Color.White;
+            this.scoreLabel.Location = new System.Drawing.Point(11, 339);
+            this.scoreLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.scoreLabel.Name = "scoreLabel";
+            this.scoreLabel.Size = new System.Drawing.Size(218, 57);
+            this.scoreLabel.TabIndex = 0;
+            // 
+            // lifeLabel
+            // 
+            this.lifeLabel.AutoSize = true;
+            this.lifeLabel.Font = new System.Drawing.Font("Comic Sans MS", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lifeLabel.ForeColor = System.Drawing.Color.White;
+            this.lifeLabel.Location = new System.Drawing.Point(805, 359);
+            this.lifeLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lifeLabel.Name = "lifeLabel";
+            this.lifeLabel.Size = new System.Drawing.Size(0, 56);
+            this.lifeLabel.TabIndex = 1;
+            // 
             // GameScreen
             // 
+
             this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
@@ -49,15 +74,19 @@
             this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.Name = "GameScreen";
             this.Size = new System.Drawing.Size(1280, 812);
+
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.GameScreen_Paint);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.GameScreen_KeyUp);
             this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.GameScreen_PreviewKeyDown);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.Timer gameTimer;
+        private System.Windows.Forms.Label scoreLabel;
+        private System.Windows.Forms.Label lifeLabel;
     }
 }
