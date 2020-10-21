@@ -1,7 +1,9 @@
 ﻿/*  
- *  Created by: Team 2
+
+ *  Created by: Calem, Declan, Kyle, Jordan, Josiah, Phaedra
+
  *  Project: Brick Breaker
- *  Date: 2020
+ *  Date: Oct, 2020 
  */ 
 using System;
 using System.Collections.Generic;
@@ -13,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Media;
+using System.Security.Cryptography.X509Certificates;
 using System.Runtime.InteropServices;
 
 namespace BrickBreaker
@@ -22,7 +25,7 @@ namespace BrickBreaker
         #region global values
 
         //player1 button control keys - DO NOT CHANGE
-        Boolean leftArrowDown, rightArrowDown;
+        Boolean leftArrowDown, rightArrowDown, upArrowDown;
 
         // Game values
         int level;
@@ -30,17 +33,34 @@ namespace BrickBreaker
         public static int playerLives;
         int playerScore; // many need to change if player score gets too high
 
+        //angle values
+        double xInt = 0;
+        double yInt = 1;
+
+        // ball values
+        int xSpeed = 0;
+        int ySpeed = 0;
+        int ballSize = 20;
+
+        //pen values
+        int lineX1;
+        int lineX2;
+
+        int lineY1;
+        int lineY2;
+
         // Paddle and Ball objects
         Paddle paddle;
         Ball ball;
 
         // list of all blocks for current level
-        List<Block> blocks = new List<Block>();
+        public static List<Block> blocks = new List<Block>();
 
         // Brushes
         SolidBrush paddleBrush = new SolidBrush(Color.White);
         SolidBrush ballBrush = new SolidBrush(Color.White);
         SolidBrush blockBrush = new SolidBrush(Color.Red);
+        Pen anglePen = new Pen(Color.Red);
         SolidBrush extraLifeBrush = new SolidBrush(Color.Green);
         SolidBrush longPaddleBrush = new SolidBrush(Color.White);
         SolidBrush shortPaddleBrush = new SolidBrush(Color.Red);
@@ -117,10 +137,8 @@ namespace BrickBreaker
             int ballX = this.Width / 2 - 10;
             int ballY = this.Height - paddle.height - 80;
 
-            // Creates a new ball
-            int xSpeed = 6;
-            int ySpeed = 6;
-            int ballSize = 20;
+            //AngleMethod();
+
             //starts ball moving up and right
             bool ballRight = true;
             bool ballUp = true;
@@ -165,15 +183,9 @@ namespace BrickBreaker
             if (ball.BottomCollision(this))
             {
 
-                playerLives--;
-                 lifeLabel.Text = playerLives + ""; // display updated life count
-                //Move paddle to middle
-                paddle.x = (this.Width / 2 - paddle.width);
-                // Moves the ball back to origin
-                ball.x = ((paddle.x - (ball.size / 2)) + (paddle.width / 2));
-                ball.y = (this.Height - paddle.height) - 85;
-                
+                //AngleMethod();
 
+                //if (lives == 0)
                 if (playerLives == 0)
                 {
                     gameTimer.Enabled = false;
@@ -207,6 +219,35 @@ namespace BrickBreaker
             #endregion
         }
 
+        //TODO - finish angling 
+        //public void AngleMethod()
+        //{
+
+        //    lineX2 = ball.x;
+        //    lineY2 = ball.y;
+
+        //    //
+        //    if (yInt == 1 && xInt == 0)
+        //    {
+        //        ball.xSpeed = 0;
+        //        lineX1 = this.Width / 2;
+        //        lineY1 = this.Height - 200;
+
+
+        //    }
+        //    else if (yInt == 1 && xInt ==1)
+        //    {
+        //        ball.xSpeed = 6;
+        //        ball.ySpeed = 6;
+        //    }
+        //    else if (yInt == 1 && xInt == -1)
+        //    {
+        //        ball.xSpeed = -6;
+        //        ball.ySpeed = 6;
+        //    }
+
+        //}
+
         private void GameScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             //player 1 button presses
@@ -217,6 +258,9 @@ namespace BrickBreaker
                     break;
                 case Keys.Right:
                     rightArrowDown = true;
+                    break;
+                case Keys.Up:
+                    upArrowDown = true;
                     break;
                 default:
                     break;
@@ -233,6 +277,9 @@ namespace BrickBreaker
                     break;
                 case Keys.Right:
                     rightArrowDown = false;
+                    break;
+                case Keys.Up:
+                    upArrowDown = false;
                     break;
                 default:
                     break;
@@ -352,6 +399,8 @@ namespace BrickBreaker
 
             // Draws ball
             e.Graphics.FillRectangle(ballBrush, ball.x, ball.y, ball.size, ball.size);
+
+            e.Graphics.DrawLine(anglePen, ball.x, ball.y - 400, 10, 400);
         }
     }
 }
