@@ -48,6 +48,7 @@ namespace BrickBreaker
         SolidBrush fastPaddleBrush = new SolidBrush(Color.Yellow);
         SolidBrush fastBallBrush = new SolidBrush(Color.Blue);
         SolidBrush oppositeBrush = new SolidBrush(Color.Pink);
+        SolidBrush oppositeBallBrush = new SolidBrush(Color.Aqua);
 
         // Jordan Var
 
@@ -174,6 +175,7 @@ namespace BrickBreaker
                 ball.xSpeed = 6;
                 ball.ySpeed = 6;
                 Paddle.opp = false;
+                Ball.oppBall = false;
 
                 lifeLabel.Text = playerLives + ""; // display updated life count
                 //Move paddle to middle
@@ -251,7 +253,7 @@ namespace BrickBreaker
         public void JordanMethod()
         {
 
-            powerPick = randJord.Next(6, 7);
+            powerPick = randJord.Next(7, 8);
             if (powerPick == 1)
             {
                 PowerUps extraLife = new PowerUps(ball.x, ball.y, 20, 20, "extraLife");
@@ -281,6 +283,11 @@ namespace BrickBreaker
             {
                 PowerUps oppositeDir = new PowerUps(ball.x, ball.y, 20, 20, "oppositeDir");
                 powers.Add(oppositeDir);
+            }
+            else if (powerPick == 7)
+            {
+                PowerUps oppositeBall = new PowerUps(ball.x, ball.y, 20, 20, "oppositeBall");
+                powers.Add(oppositeBall);
             }
         }
         private void gameTimer_Tick(object sender, EventArgs e)
@@ -390,6 +397,10 @@ namespace BrickBreaker
                 else if (p.power == "oppositeDir")
                 {
                     e.Graphics.FillEllipse(oppositeBrush, p.x, p.y, p.width, p.height);
+                }
+                else if (p.power == "oppositeBall")
+                {
+                    e.Graphics.FillEllipse(oppositeBallBrush, p.x, p.y, p.width, p.height);
                 }
             }
             
