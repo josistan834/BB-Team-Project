@@ -15,6 +15,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 using System.Media;
 using System.Security.Cryptography.X509Certificates;
@@ -39,21 +40,10 @@ namespace BrickBreaker
         public static int playerLives;
         int playerScore; // many need to change if player score gets too high
 
-        //angle values
-        double xInt = 0;
-        double yInt = 1;
-
         // ball values
-        int xSpeed = 0;
-        int ySpeed = 0;
+        int xSpeed = 6;
+        int ySpeed = 6;
         int ballSize = 20;
-
-        //pen values
-        int lineX1;
-        int lineX2;
-
-        int lineY1;
-        int lineY2;
 
         // Paddle and Ball objects
         Paddle paddle;
@@ -191,11 +181,20 @@ namespace BrickBreaker
             if (ball.BottomCollision(this))
             {
 
-                //AngleMethod();
-
-                //if (lives == 0)
+                playerLives--;
+                ball.x = this.Width / 2 - 10 - (paddle.width/2); 
+                ball.y = this.Height - paddle.height - 80;
+                ball.ballUp = true;
+                paddle.x = this.Width / 2 - paddle.width;
+                Refresh();
+                if(playerLives != 0)
+                {
+                    Thread.Sleep(2000);
+                }
+                
                 if (playerLives == 0)
                 {
+                    
                     gameTimer.Enabled = false;
                     OnEnd();
                 }
@@ -227,34 +226,6 @@ namespace BrickBreaker
             #endregion
         }
 
-        //TODO - finish angling 
-        //public void AngleMethod()
-        //{
-
-        //    lineX2 = ball.x;
-        //    lineY2 = ball.y;
-
-        //    //
-        //    if (yInt == 1 && xInt == 0)
-        //    {
-        //        ball.xSpeed = 0;
-        //        lineX1 = this.Width / 2;
-        //        lineY1 = this.Height - 200;
-
-
-        //    }
-        //    else if (yInt == 1 && xInt ==1)
-        //    {
-        //        ball.xSpeed = 6;
-        //        ball.ySpeed = 6;
-        //    }
-        //    else if (yInt == 1 && xInt == -1)
-        //    {
-        //        ball.xSpeed = -6;
-        //        ball.ySpeed = 6;
-        //    }
-
-        //}
 
         private void GameScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
@@ -296,6 +267,7 @@ namespace BrickBreaker
                     break;
                 case Keys.Up:
                     upArrowDown = false;
+
                     break;
                 default:
                     break;
@@ -319,7 +291,6 @@ namespace BrickBreaker
                 }
             }
         }
-
 
         public void JordanMethod()
         {
@@ -449,7 +420,6 @@ namespace BrickBreaker
             // Draws ball
             e.Graphics.FillRectangle(ballBrush, ball.x, ball.y, ball.size, ball.size);
 
-            e.Graphics.DrawLine(anglePen, ball.x, ball.y - 400, 10, 400);
         }
     }
 }
