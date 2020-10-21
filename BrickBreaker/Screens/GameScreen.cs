@@ -1,8 +1,12 @@
 ﻿/*  
- *  Created by: Team 2
+
+ *  Created by: Calem, Declan, Kyle, Jordan, Josiah, Phaedra
+
  *  Project: Brick Breaker
- *  Date: 2020
- */
+
+ *  Date: Oct, 2020 
+ */ 
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,9 +15,11 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 using System.Media;
 using System.Xml;
+using System.Security.Cryptography.X509Certificates;
 using System.Runtime.InteropServices;
 
 
@@ -24,7 +30,11 @@ namespace BrickBreaker
         #region global values
 
         //player1 button control keys - DO NOT CHANGE
-        Boolean leftArrowDown, rightArrowDown;
+
+        Boolean leftArrowDown, rightArrowDown, pArrowDown, upArrowDown;
+        Boolean stop = false;
+
+
 
         // Game values
         int level;
@@ -32,17 +42,23 @@ namespace BrickBreaker
         public static int playerLives;
         int playerScore; // many need to change if player score gets too high
 
+        // ball values
+        int xSpeed = 6;
+        int ySpeed = 6;
+        int ballSize = 20;
+
         // Paddle and Ball objects
         Paddle paddle;
         Ball ball;
 
         // list of all blocks for current level
-        List<Block> blocks = new List<Block>();
+        public static List<Block> blocks = new List<Block>();
 
         // Brushes
         SolidBrush paddleBrush = new SolidBrush(Color.White);
         SolidBrush ballBrush = new SolidBrush(Color.White);
         SolidBrush blockBrush = new SolidBrush(Color.Red);
+        Pen anglePen = new Pen(Color.Red);
         SolidBrush extraLifeBrush = new SolidBrush(Color.Green);
         SolidBrush longPaddleBrush = new SolidBrush(Color.White);
         SolidBrush shortPaddleBrush = new SolidBrush(Color.Red);
@@ -64,6 +80,7 @@ namespace BrickBreaker
         public GameScreen()
         {
             InitializeComponent();
+            Form1.seagulSound.Stop();
             OnStart();
         }
 
@@ -118,7 +135,7 @@ namespace BrickBreaker
             lifeLabel.Text = playerLives + "";
 
             //set all button presses to false.
-            leftArrowDown = rightArrowDown = false;
+            leftArrowDown = rightArrowDown = pArrowDown = false;
 
             // setup starting paddle values and create paddle object
             int paddleWidth = 80;
@@ -133,10 +150,8 @@ namespace BrickBreaker
             int ballX = this.Width / 2 - 10;
             int ballY = this.Height - paddle.height - 80;
 
-            // Creates a new ball
-            int xSpeed = 6;
-            int ySpeed = 6;
-            int ballSize = 20;
+            //AngleMethod();
+
             //starts ball moving up and right
             bool ballRight = true;
             bool ballUp = true;
@@ -146,6 +161,7 @@ namespace BrickBreaker
             // chooses starting powerUp
 
             powerPick = randJord.Next(1, 3);
+
 
             levelOne(); // call level one method
 
@@ -173,9 +189,16 @@ namespace BrickBreaker
                 // Moves the ball back to origin
                 ball.x = ((paddle.x - (ball.size / 2)) + (paddle.width / 2));
                 ball.y = (this.Height - paddle.height) - 85;
+                ball.ballUp = true;               
+                Refresh();
+                if(playerLives != 0)
+                {
+                    Thread.Sleep(2000);
+                }
 
                 if (playerLives == 0)
                 {
+                    
                     gameTimer.Enabled = false;
                     OnEnd();
                 }
@@ -207,6 +230,7 @@ namespace BrickBreaker
             #endregion
         }
 
+
         private void GameScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             //player 1 button presses
@@ -217,6 +241,14 @@ namespace BrickBreaker
                     break;
                 case Keys.Right:
                     rightArrowDown = true;
+                    break;
+
+                case Keys.P:
+                    pArrowDown = true;
+                    break;
+                case Keys.Up:
+                    upArrowDown = true;
+
                     break;
                 default:
                     break;
@@ -234,16 +266,38 @@ namespace BrickBreaker
                 case Keys.Right:
                     rightArrowDown = false;
                     break;
+                case Keys.P:
+                    pArrowDown = false;
+                    break;
+                case Keys.Up:
+                    upArrowDown = false;
+
+                    break;
                 default:
                     break;
             }
         }
+
+
+        public void pause()
+        {
+            pArrowDown = false;
+            gameTimer.Stop();
+            stop = true;
+            label1.Visible = true;
+            playButton.Visible = true;
+            exitButton.Visible = true;
+            playButton.Focus();
+
+        }
+
 
         public void JordanMethod()
         {
 
             powerPick = randJord.Next(1, 5);
             if (powerPick == 1)
+
             {
                 PowerUps extraLife = new PowerUps(ball.x, ball.y, 20, 20, "extraLife");
                 powers.Add(extraLife);
@@ -253,6 +307,7 @@ namespace BrickBreaker
                 PowerUps longPaddle = new PowerUps(ball.x, ball.y, 20, 20, "longPaddle");
                 powers.Add(longPaddle);
             }
+
             else if (powerPick == 3)
             {
                 PowerUps shortPaddle = new PowerUps(ball.x, ball.y, 20, 20, "shortPaddle");
@@ -264,6 +319,33 @@ namespace BrickBreaker
                 powers.Add(fastPaddle);
             }
         }
+
+        private void playButton_Click(object sender, EventArgs e)
+        {
+            label1.Visible = false;
+            playButton.Visible = false;
+            exitButton.Visible = false;
+            gameTimer.Start();
+            this.Focus();
+        }
+
+        private void exitButton_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void playenter(object sender, EventArgs e)
+        {
+            exitButton.BackColor = Color.MediumSpringGreen;
+            playButton.BackColor = Color.PaleTurquoise;
+        }
+
+        private void exitenter(object sender, EventArgs e)
+        {
+            playButton.BackColor = Color.MediumSpringGreen;
+            exitButton.BackColor = Color.PaleTurquoise;
+        }
+
         private void gameTimer_Tick(object sender, EventArgs e)
         {
             #region PowerUp
@@ -272,6 +354,7 @@ namespace BrickBreaker
             {
                 powers[i].y += 5;
                 if (powers[i].y > this.Height - 30)
+
                 {
                     powers.RemoveAt(i);
                 }
@@ -288,6 +371,7 @@ namespace BrickBreaker
             // Move the paddle
             if (leftArrowDown && paddle.x > 0)
             {
+
                 paddle.Move("left");
             }
             if (rightArrowDown && paddle.x < (this.Width - paddle.width))
@@ -296,7 +380,17 @@ namespace BrickBreaker
             }
 
 
+
             CalemMethod();
+
+
+
+
+            if (pArrowDown == true)
+            {
+                pause();
+
+            }
 
 
             //redraw the screen
@@ -310,11 +404,12 @@ namespace BrickBreaker
 
             // Goes to the game over screen
             Form form = this.FindForm();
-            MenuScreen ps = new MenuScreen();
 
-            ps.Location = new Point((form.Width - ps.Width) / 2, (form.Height - ps.Height) / 2);
+            GameOverScreen go = new GameOverScreen();
 
-            form.Controls.Add(ps);
+            go.Location = new Point((form.Width - go.Width) / 2, (form.Height - go.Height) / 2);
+
+            form.Controls.Add(go);
             form.Controls.Remove(this);
         }
 
@@ -376,6 +471,7 @@ namespace BrickBreaker
 
             // Draws ball
             e.Graphics.FillRectangle(ballBrush, ball.x, ball.y, ball.size, ball.size);
+
         }
 
         public void HighScoreRead()
