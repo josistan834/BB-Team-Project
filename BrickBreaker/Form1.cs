@@ -1,6 +1,4 @@
-﻿/// Declan Feore
-/// Mr. T
-/// //Josiah
+﻿//Clean build
 
 using System;
 using System.Collections.Generic;
