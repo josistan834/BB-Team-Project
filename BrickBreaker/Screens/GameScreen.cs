@@ -1,5 +1,5 @@
 ﻿/*  
- *  Created by: Calem
+ *  Created by: Team 2
  *  Project: Brick Breaker
  *  Date: 2020
  */ 
@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Media;
+using System.Runtime.InteropServices;
 
 namespace BrickBreaker
 {
@@ -25,7 +26,8 @@ namespace BrickBreaker
 
         // Game values
         int level;
-        int playerLives;
+        public static int paddleSpeed;
+        public static int playerLives;
         int playerScore; // many need to change if player score gets too high
 
         // Paddle and Ball objects
@@ -39,7 +41,17 @@ namespace BrickBreaker
         SolidBrush paddleBrush = new SolidBrush(Color.White);
         SolidBrush ballBrush = new SolidBrush(Color.White);
         SolidBrush blockBrush = new SolidBrush(Color.Red);
+        SolidBrush extraLifeBrush = new SolidBrush(Color.Green);
+        SolidBrush longPaddleBrush = new SolidBrush(Color.White);
+        SolidBrush shortPaddleBrush = new SolidBrush(Color.Red);
+        SolidBrush fastPaddleBrush = new SolidBrush(Color.Yellow);
 
+        // Jordan Var
+
+        public List<PowerUps> powers = new List<PowerUps>();
+        Random randJord = new Random();
+        int powerPick;
+        int powerDec;
         #endregion
 
         public GameScreen()
@@ -97,7 +109,7 @@ namespace BrickBreaker
             int paddleHeight = 20;
             int paddleX = ((this.Width / 2) - (paddleWidth / 2));
             int paddleY = (this.Height - paddleHeight) - 60;
-            int paddleSpeed = 8;
+            paddleSpeed = 8;
             paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight, paddleSpeed, Color.White);
 
             #region ball variables
@@ -114,6 +126,12 @@ namespace BrickBreaker
             bool ballUp = true;
             ball = new Ball(ballX, ballY, xSpeed, ySpeed, ballSize, ballRight, ballUp);
             #endregion
+
+            // chooses starting powerUp
+
+            powerPick = randJord.Next(1, 3);
+
+   
 
             #region Creates blocks for generic level. Need to replace with code that loads levels.
 
@@ -172,7 +190,11 @@ namespace BrickBreaker
                 if (ball.BlockCollision(b))
                 {
                     blocks.Remove(b);
-
+                    powerDec = randJord.Next(1, 100);
+                    if (powerDec > 1 && powerDec < 100)
+                    {
+                        JordanMethod();
+                    }
                     if (blocks.Count == 0)
                     {
                         gameTimer.Enabled = false;
@@ -217,9 +239,52 @@ namespace BrickBreaker
             }
         }
 
+        public void JordanMethod()
+        {
+
+            powerPick = randJord.Next(1, 5);
+            if (powerPick == 1)
+            {
+                PowerUps extraLife = new PowerUps(ball.x, ball.y, 20, 20, "extraLife");
+                powers.Add(extraLife);
+            }
+            else if (powerPick == 2)
+            {
+                PowerUps longPaddle = new PowerUps(ball.x, ball.y, 20, 20, "longPaddle");
+                powers.Add(longPaddle);
+            }
+            else if (powerPick == 3)
+            {
+                PowerUps shortPaddle = new PowerUps(ball.x, ball.y, 20, 20, "shortPaddle");
+                powers.Add(shortPaddle);
+            }
+            else if (powerPick == 4)
+            {
+                PowerUps fastPaddle = new PowerUps(ball.x, ball.y, 20, 20, "fastPaddle");
+                powers.Add(fastPaddle);
+            }
+        }
         private void gameTimer_Tick(object sender, EventArgs e)
         {
+            #region PowerUp
+            // power ups fall
+            for (int i = 0; i < powers.Count(); i++)
+            {
+                powers[i].y += 5;
+                if (powers[i].y > this.Height - 30)
+                {
+                    powers.RemoveAt(i);
+                }
+            }
+            foreach (PowerUps p in powers)
+            {
+                paddle.PowerUpCollision(p);
+            }
+            
+            #endregion
+            
             DeclanMethod();
+
 
             // Move the paddle
             if (leftArrowDown && paddle.x > 0)
@@ -230,7 +295,6 @@ namespace BrickBreaker
             {
                 paddle.Move("right");
             }
-
 
 
             CalemMethod();
@@ -263,6 +327,28 @@ namespace BrickBreaker
             {
                 e.Graphics.FillRectangle(blockBrush, b.x, b.y, b.width, b.height);
             }
+
+            // Draws powerUp
+            foreach (PowerUps p in powers)
+            {
+                if (p.power == "longPaddle")
+                {
+                    e.Graphics.FillEllipse(longPaddleBrush, p.x, p.y, p.width, p.height);
+                }
+                else if (p.power == "extraLife")
+                {
+                    e.Graphics.FillEllipse(extraLifeBrush, p.x, p.y, p.width, p.height);
+                }
+                else if (p.power == "shortPaddle")
+                {
+                    e.Graphics.FillEllipse(shortPaddleBrush, p.x, p.y, p.width, p.height);
+                }
+                else if (p.power == "fastPaddle")
+                {
+                    e.Graphics.FillEllipse(fastPaddleBrush, p.x, p.y, p.width, p.height);
+                }
+            }
+            
 
             // Draws ball
             e.Graphics.FillRectangle(ballBrush, ball.x, ball.y, ball.size, ball.size);

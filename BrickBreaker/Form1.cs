@@ -13,7 +13,10 @@ using System.Windows.Forms;
 namespace BrickBreaker
 {
     public partial class Form1 : Form
+ 
     {
+        // Jordan Sinclair
+       
         public Form1()
         {
             InitializeComponent();
