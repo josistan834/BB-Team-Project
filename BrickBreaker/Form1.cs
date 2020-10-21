@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -12,6 +13,11 @@ namespace BrickBreaker
 {
     public partial class Form1 : Form
     {
+
+        public static SoundPlayer bubbleSound = new SoundPlayer(Properties.Resources.bubbling2);
+        public static SoundPlayer seagulSound = new SoundPlayer(Properties.Resources.seagul);
+        public static SoundPlayer collisionSound = new SoundPlayer(Properties.Resources.collision);
+        public static SoundPlayer breakBrick = new SoundPlayer(Properties.Resources.score);
         public Form1()
         {
             InitializeComponent();

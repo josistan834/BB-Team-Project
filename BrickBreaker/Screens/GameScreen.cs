@@ -1,7 +1,7 @@
 ﻿/*  Created by: 
  *  Project: Brick Breaker
  *  Date: 
- */ 
+ */
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,7 +20,9 @@ namespace BrickBreaker
         #region global values
 
         //player1 button control keys - DO NOT CHANGE
-        Boolean leftArrowDown, rightArrowDown;
+        Boolean leftArrowDown, rightArrowDown, pArrowDown;
+        Boolean stop = false;
+
 
         // Game values
         int lives;
@@ -42,6 +44,7 @@ namespace BrickBreaker
         public GameScreen()
         {
             InitializeComponent();
+            Form1.seagulSound.Stop();
             OnStart();
         }
 
@@ -52,7 +55,7 @@ namespace BrickBreaker
             lives = 3;
 
             //set all button presses to false.
-            leftArrowDown = rightArrowDown = false;
+            leftArrowDown = rightArrowDown = pArrowDown = false;
 
             // setup starting paddle values and create paddle object
             int paddleWidth = 80;
@@ -73,9 +76,9 @@ namespace BrickBreaker
             ball = new Ball(ballX, ballY, xSpeed, ySpeed, ballSize);
 
             #region Creates blocks for generic level. Need to replace with code that loads levels.
-            
+
             //TODO - replace all the code in this region eventually with code that loads levels from xml files
-            
+
             blocks.Clear();
             int x = 10;
 
@@ -103,6 +106,9 @@ namespace BrickBreaker
                 case Keys.Right:
                     rightArrowDown = true;
                     break;
+                case Keys.P:
+                    pArrowDown = true;
+                    break;
                 default:
                     break;
             }
@@ -119,13 +125,36 @@ namespace BrickBreaker
                 case Keys.Right:
                     rightArrowDown = false;
                     break;
+                case Keys.P:
+                    pArrowDown = false;
+                    break;
                 default:
                     break;
             }
         }
 
+        public void pause()
+        {
+            pArrowDown = false;
+            gameTimer.Stop();
+            stop = true;
+
+            if (stop == true)
+            {
+                if (pArrowDown == true)
+                {
+                    stop = false;
+                    gameTimer.Start();
+
+                }
+            }
+        }
+
+
         private void gameTimer_Tick(object sender, EventArgs e)
         {
+            // Move ball
+            ball.Move();
             // Move the paddle
             if (leftArrowDown && paddle.x > 0)
             {
@@ -136,15 +165,13 @@ namespace BrickBreaker
                 paddle.Move("right");
             }
 
-            // Move ball
-            ball.Move();
-
             // Check for collision with top and side walls
             ball.WallCollision(this);
 
             // Check for ball hitting bottom of screen
             if (ball.BottomCollision(this))
             {
+
                 lives--;
 
                 // Moves the ball back to origin
@@ -167,7 +194,7 @@ namespace BrickBreaker
                 if (ball.BlockCollision(b))
                 {
                     blocks.Remove(b);
-
+                    Form1.breakBrick.Play();
                     if (blocks.Count == 0)
                     {
                         gameTimer.Enabled = false;
@@ -178,6 +205,15 @@ namespace BrickBreaker
                 }
             }
 
+
+
+            if (pArrowDown == true)
+            {
+                pause();
+
+            }
+
+
             //redraw the screen
             Refresh();
         }
@@ -186,11 +222,11 @@ namespace BrickBreaker
         {
             // Goes to the game over screen
             Form form = this.FindForm();
-            MenuScreen ps = new MenuScreen();
-            
-            ps.Location = new Point((form.Width - ps.Width) / 2, (form.Height - ps.Height) / 2);
+            GameOverScreen go = new GameOverScreen();
 
-            form.Controls.Add(ps);
+            go.Location = new Point((form.Width - go.Width) / 2, (form.Height - go.Height) / 2);
+
+            form.Controls.Add(go);
             form.Controls.Remove(this);
         }
 
