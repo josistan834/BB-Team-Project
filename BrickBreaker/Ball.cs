@@ -114,8 +114,22 @@ namespace BrickBreaker
 
             return didCollide;
         }
+        public void PowerUpBCollision(PowerUps p, Paddle s)
+        {
+            Rectangle powerRec = new Rectangle(p.x, p.y, p.width, p.height);
+            Rectangle paddleRec = new Rectangle(s.x, s.y, s.width, s.height);
+            if (p.power == "fastBall")
+            {
+                if (paddleRec.IntersectsWith(powerRec))
+                {
+                    xSpeed += 3;
+                    ySpeed += 3;
+                    p.x = 2000;
+                }
+            }
+        }
 
-        
+
 
     }
 }

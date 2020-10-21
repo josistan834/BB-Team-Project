@@ -41,10 +41,13 @@ namespace BrickBreaker
         SolidBrush paddleBrush = new SolidBrush(Color.White);
         SolidBrush ballBrush = new SolidBrush(Color.White);
         SolidBrush blockBrush = new SolidBrush(Color.Red);
+
         SolidBrush extraLifeBrush = new SolidBrush(Color.Green);
         SolidBrush longPaddleBrush = new SolidBrush(Color.White);
         SolidBrush shortPaddleBrush = new SolidBrush(Color.Red);
         SolidBrush fastPaddleBrush = new SolidBrush(Color.Yellow);
+        SolidBrush fastBallBrush = new SolidBrush(Color.Blue);
+        SolidBrush oppositeBrush = new SolidBrush(Color.Pink);
 
         // Jordan Var
 
@@ -166,7 +169,13 @@ namespace BrickBreaker
             {
 
                 playerLives--;
-                 lifeLabel.Text = playerLives + ""; // display updated life count
+                paddle.width = 80;
+                paddle.speed = 8;
+                ball.xSpeed = 6;
+                ball.ySpeed = 6;
+                Paddle.opp = false;
+
+                lifeLabel.Text = playerLives + ""; // display updated life count
                 //Move paddle to middle
                 paddle.x = (this.Width / 2 - paddle.width);
                 // Moves the ball back to origin
@@ -242,7 +251,7 @@ namespace BrickBreaker
         public void JordanMethod()
         {
 
-            powerPick = randJord.Next(1, 5);
+            powerPick = randJord.Next(6, 7);
             if (powerPick == 1)
             {
                 PowerUps extraLife = new PowerUps(ball.x, ball.y, 20, 20, "extraLife");
@@ -263,6 +272,16 @@ namespace BrickBreaker
                 PowerUps fastPaddle = new PowerUps(ball.x, ball.y, 20, 20, "fastPaddle");
                 powers.Add(fastPaddle);
             }
+            else if (powerPick == 5)
+            {
+                PowerUps fastBall = new PowerUps(ball.x, ball.y, 20, 20, "fastBall");
+                powers.Add(fastBall);
+            }
+            else if (powerPick == 6)
+            {
+                PowerUps oppositeDir = new PowerUps(ball.x, ball.y, 20, 20, "oppositeDir");
+                powers.Add(oppositeDir);
+            }
         }
         private void gameTimer_Tick(object sender, EventArgs e)
         {
@@ -270,7 +289,7 @@ namespace BrickBreaker
             // power ups fall
             for (int i = 0; i < powers.Count(); i++)
             {
-                powers[i].y += 5;
+                powers[i].y += 8;
                 if (powers[i].y > this.Height - 30)
                 {
                     powers.RemoveAt(i);
@@ -279,21 +298,38 @@ namespace BrickBreaker
             foreach (PowerUps p in powers)
             {
                 paddle.PowerUpCollision(p);
+                ball.PowerUpBCollision(p, paddle);
+
             }
             
             #endregion
             
             DeclanMethod();
 
+            lifeLabel.Text = playerLives + "";
 
             // Move the paddle
             if (leftArrowDown && paddle.x > 0)
             {
-                paddle.Move("left");
+                if (Paddle.opp == true)
+                {
+                    paddle.Move("right");
+                }
+                else
+                {
+                    paddle.Move("left");
+                }  
             }
             if (rightArrowDown && paddle.x < (this.Width - paddle.width))
             {
-                paddle.Move("right");
+                if (Paddle.opp == true)
+                {
+                    paddle.Move("left");
+                }
+                else
+                {
+                    paddle.Move("right");
+                }
             }
 
 
@@ -346,6 +382,14 @@ namespace BrickBreaker
                 else if (p.power == "fastPaddle")
                 {
                     e.Graphics.FillEllipse(fastPaddleBrush, p.x, p.y, p.width, p.height);
+                }
+                else if (p.power == "fastBall")
+                {
+                    e.Graphics.FillEllipse(fastBallBrush, p.x, p.y, p.width, p.height);
+                }
+                else if (p.power == "oppositeDir")
+                {
+                    e.Graphics.FillEllipse(oppositeBrush, p.x, p.y, p.width, p.height);
                 }
             }
             
