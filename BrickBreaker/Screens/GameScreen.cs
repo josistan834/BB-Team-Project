@@ -1,6 +1,7 @@
-﻿/*  Created by: 
+﻿/*  
+ *  Created by: Team 2
  *  Project: Brick Breaker
- *  Date: 
+ *  Date: 2020
  */ 
 using System;
 using System.Collections.Generic;
@@ -24,8 +25,10 @@ namespace BrickBreaker
         Boolean leftArrowDown, rightArrowDown;
 
         // Game values
-        public static int lives;
+        int level;
         public static int paddleSpeed;
+        public static int playerLives;
+        int playerScore; // many need to change if player score gets too high
 
         // Paddle and Ball objects
         Paddle paddle;
@@ -57,11 +60,46 @@ namespace BrickBreaker
             OnStart();
         }
 
+        public void DeclanMethod()
+        {
+            // Check if ball has collided with any blocks
+            foreach (Block b in blocks)
+            {
+                if (ball.BlockCollision(b)) // block health decreases when hit by ball
+                {
+                    b.hp--;
+
+                    if (b.hp > 0) // player score increases when the ball hits a block
+                    {
+                        playerScore = playerScore + 50; // update score
+                        scoreLabel.Text = playerScore + ""; // display updated score
+                    }
+                    else if (b.hp == 0) // remove block from screen if its health is zero
+                    {
+                        playerScore = playerScore + 100; // update score
+                        scoreLabel.Text = playerScore + ""; // display updated score
+                        blocks.Remove(b);
+                    } 
+                    
+                    if (blocks.Count == 0) // go to next level if player finishes current level
+                    {
+                        gameTimer.Enabled = false;
+                        OnEnd(); 
+                    }
+
+                    break;
+                }
+            }
+        }
 
         public void OnStart()
         {
             //set life counter
-            lives = 3;
+            playerLives = 3;
+
+            // display life and score values
+            scoreLabel.Text = playerScore + "";
+            lifeLabel.Text = playerLives + "";
 
             //set all button presses to false.
             leftArrowDown = rightArrowDown = false;
@@ -74,6 +112,7 @@ namespace BrickBreaker
             paddleSpeed = 8;
             paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight, paddleSpeed, Color.White);
 
+            #region ball variables
             // setup starting ball values
             int ballX = this.Width / 2 - 10;
             int ballY = this.Height - paddle.height - 80;
@@ -82,7 +121,11 @@ namespace BrickBreaker
             int xSpeed = 6;
             int ySpeed = 6;
             int ballSize = 20;
-            ball = new Ball(ballX, ballY, xSpeed, ySpeed, ballSize);
+            //starts ball moving up and right
+            bool ballRight = true;
+            bool ballUp = true;
+            ball = new Ball(ballX, ballY, xSpeed, ySpeed, ballSize, ballRight, ballUp);
+            #endregion
 
             // chooses starting powerUp
 
@@ -93,11 +136,10 @@ namespace BrickBreaker
             #region Creates blocks for generic level. Need to replace with code that loads levels.
 
             //TODO - replace all the code in this region eventually with code that loads levels from xml files
-
             blocks.Clear();
             int x = 10;
 
-            while (blocks.Count < 12)
+            while (blocks.Count() < 12)
             {
                 x += 57;
                 Block b1 = new Block(x, 10, 1, Color.White);
@@ -108,6 +150,61 @@ namespace BrickBreaker
 
             // start the game engine loop
             gameTimer.Enabled = true;
+        }
+
+        public void CalemMethod()
+        {
+            // Move ball
+            ball.Move();
+
+            #region collisions
+            // Check for collision with top and side walls
+            ball.WallCollision(this);
+
+            // Check for ball hitting bottom of screen
+            if (ball.BottomCollision(this))
+            {
+
+                playerLives--;
+                 lifeLabel.Text = playerLives + ""; // display updated life count
+                //Move paddle to middle
+                paddle.x = (this.Width / 2 - paddle.width);
+                // Moves the ball back to origin
+                ball.x = ((paddle.x - (ball.size / 2)) + (paddle.width / 2));
+                ball.y = (this.Height - paddle.height) - 85;
+                
+
+                if (playerLives == 0)
+                {
+                    gameTimer.Enabled = false;
+                    OnEnd();
+                }
+            }
+
+            // Check for collision of ball with paddle, (incl. paddle movement)
+            ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown);
+           
+            // Check if ball has collided with any blocks
+            foreach (Block b in blocks)
+            {
+                if (ball.BlockCollision(b))
+                {
+                    blocks.Remove(b);
+                    powerDec = randJord.Next(1, 100);
+                    if (powerDec > 1 && powerDec < 100)
+                    {
+                        JordanMethod();
+                    }
+                    if (blocks.Count == 0)
+                    {
+                        gameTimer.Enabled = false;
+                        OnEnd();
+                    }
+
+                    break;
+                }
+            }
+            #endregion
         }
 
         private void GameScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -185,6 +282,10 @@ namespace BrickBreaker
             }
             
             #endregion
+            
+            DeclanMethod();
+
+
             // Move the paddle
             if (leftArrowDown && paddle.x > 0)
             {
@@ -195,55 +296,9 @@ namespace BrickBreaker
                 paddle.Move("right");
             }
 
-            // Move ball
-            ball.Move();
 
-            // Check for collision with top and side walls
-            ball.WallCollision(this);
+            CalemMethod();
 
-            // Check for ball hitting bottom of screen
-            if (ball.BottomCollision(this))
-            {
-                lives--;
-                paddle.width = 80;
-                paddleSpeed = 8;
-                // Moves the ball back to origin
-                ball.x = ((paddle.x - (ball.size / 2)) + (paddle.width / 2));
-                ball.y = (this.Height - paddle.height) - 85;
-
-                if (lives == 0)
-                {
-                    gameTimer.Enabled = false;
-                    OnEnd();
-                }
-            }
-
-            // Check for collision of ball with paddle, (incl. paddle movement)
-            ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown);
-            
-            // Check if ball has collided with any blocks
-            foreach (Block b in blocks)
-            {
-                if (ball.BlockCollision(b))
-                {
-                    blocks.Remove(b);
-                    
-
-                    powerDec = randJord.Next(1, 100);
-                    if (powerDec > 1 && powerDec < 100)
-                    {
-                        JordanMethod();
-                    }
-
-                    if (blocks.Count == 0)
-                    {
-                        gameTimer.Enabled = false;
-                        OnEnd();
-                    }
-
-                    break;
-                }
-            }
 
             //redraw the screen
             Refresh();
