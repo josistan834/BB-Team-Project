@@ -2,7 +2,7 @@
  *  Created by: Team 2
  *  Project: Brick Breaker
  *  Date: 2020
- */ 
+ */
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -51,13 +51,14 @@ namespace BrickBreaker
 
         //List that will build highscores using a class to then commit them to a XML file
         List<score> highScoreList = new List<score>();
-        string highScore;
+
         // Jordan Var
 
         public List<PowerUps> powers = new List<PowerUps>();
         Random randJord = new Random();
         int powerPick;
         int powerDec;
+
         #endregion
 
         public GameScreen()
@@ -75,6 +76,7 @@ namespace BrickBreaker
                 if (ball.BlockCollision(b)) // block health decreases when hit by ball
                 {
                     b.hp--;
+                    BlockColour();
 
                     if (b.hp > 0) // player score increases when the ball hits a block
                     {
@@ -86,16 +88,22 @@ namespace BrickBreaker
                         playerScore = playerScore + 100; // update score
                         scoreLabel.Text = playerScore + ""; // display updated score
                         blocks.Remove(b);
-                    } 
-                    
+                    }
+
                     if (blocks.Count == 0) // go to next level if player finishes current level
                     {
                         gameTimer.Enabled = false;
-                        OnEnd(); 
+                        OnEnd();
                     }
 
                     break;
                 }
+            }
+
+            if (playerLives == 0)
+            {
+                gameTimer.Enabled = false;
+                OnEnd();
             }
         }
 
@@ -139,22 +147,7 @@ namespace BrickBreaker
 
             powerPick = randJord.Next(1, 3);
 
-   
-
-            #region Creates blocks for generic level. Need to replace with code that loads levels.
-
-            //TODO - replace all the code in this region eventually with code that loads levels from xml files
-            blocks.Clear();
-            int x = 10;
-
-            while (blocks.Count() < 12)
-            {
-                x += 57;
-                Block b1 = new Block(x, 10, 1, Color.White);
-                blocks.Add(b1);
-            }
-
-            #endregion
+            levelOne(); // call level one method
 
             // start the game engine loop
             gameTimer.Enabled = true;
@@ -174,12 +167,12 @@ namespace BrickBreaker
             {
 
                 playerLives--;
-                 lifeLabel.Text = playerLives + ""; // display updated life count
+                lifeLabel.Text = playerLives + ""; // display updated life count
                 //Move paddle to middle
                 paddle.x = (this.Width / 2 - paddle.width);
                 // Moves the ball back to origin
                 ball.x = ((paddle.x - (ball.size / 2)) + (paddle.width / 2));
-                ball.y = (this.Height - paddle.height) - 85;                
+                ball.y = (this.Height - paddle.height) - 85;
 
                 if (playerLives == 0)
                 {
@@ -190,7 +183,7 @@ namespace BrickBreaker
 
             // Check for collision of ball with paddle, (incl. paddle movement)
             ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown);
-           
+
             // Check if ball has collided with any blocks
             foreach (Block b in blocks)
             {
@@ -287,11 +280,10 @@ namespace BrickBreaker
             {
                 paddle.PowerUpCollision(p);
             }
-            
-            #endregion
-            
-            DeclanMethod();
 
+            #endregion
+
+            DeclanMethod();
 
             // Move the paddle
             if (leftArrowDown && paddle.x > 0)
@@ -319,7 +311,7 @@ namespace BrickBreaker
             // Goes to the game over screen
             Form form = this.FindForm();
             MenuScreen ps = new MenuScreen();
-            
+
             ps.Location = new Point((form.Width - ps.Width) / 2, (form.Height - ps.Height) / 2);
 
             form.Controls.Add(ps);
@@ -335,6 +327,28 @@ namespace BrickBreaker
             // Draws blocks
             foreach (Block b in blocks)
             {
+                if (b.hp == 1)
+                {
+                    b.colour = Color.LightYellow;
+                }
+                else if (b.hp == 2)
+                {
+                    b.colour = Color.Yellow;
+                }
+                else if (b.hp == 3)
+                {
+                    b.colour = Color.OrangeRed;
+                }
+                else if (b.hp == 4)
+                {
+                    b.colour = Color.Orange;
+                }
+                else if (b.hp == 5)
+                {
+                    b.colour = Color.DarkOrange;
+                }
+                blockBrush.Color = b.colour;
+
                 e.Graphics.FillRectangle(blockBrush, b.x, b.y, b.width, b.height);
             }
 
@@ -358,7 +372,7 @@ namespace BrickBreaker
                     e.Graphics.FillEllipse(fastPaddleBrush, p.x, p.y, p.width, p.height);
                 }
             }
-            
+
 
             // Draws ball
             e.Graphics.FillRectangle(ballBrush, ball.x, ball.y, ball.size, ball.size);
@@ -366,22 +380,26 @@ namespace BrickBreaker
 
         public void HighScoreRead()
         {
-            XmlReader reader = XmlReader.Create("highScores.xml", null);
+            // create reader
+            XmlReader reader = XmlReader.Create("highScores.xml");
 
+            // read high score xml file
             while (reader.Read())
             {
+                // take high score values from high score xml file
                 if (reader.NodeType == XmlNodeType.Text)
                 {
                     reader.ReadToNextSibling("score");
                     string numScore = reader.ReadString();
 
+                    // add score to high score list
                     score s = new score(numScore);
                     highScoreList.Add(s);
 
                     //highScoreLabel.Text += s.numScore + "\n";
                 }
             }
-            
+
             // remove the lowest high score if there are already 10 scores when adding a new score 
             if (highScoreList.Count > 10)
             {
@@ -394,7 +412,7 @@ namespace BrickBreaker
         public void HighScoreWrite()
         {
             // create write for xml file
-            XmlWriter writer = XmlWriter.Create("highScores.xml", null);          
+            XmlWriter writer = XmlWriter.Create("highScores.xml", null);
 
             // start writer
             writer.WriteStartElement("Highscores");
@@ -412,6 +430,71 @@ namespace BrickBreaker
             // end and close writer
             writer.WriteEndElement();
             writer.Close();
+        }
+
+        public void BlockColour()
+        {
+            // change block colour based on the block's health
+            foreach (Block b in blocks)
+            {
+                if (b.hp == 1)
+                {
+                    b.colour = Color.LightYellow;
+                }
+                else if (b.hp == 2)
+                {
+                    b.colour = Color.Yellow;
+                }
+                else if (b.hp == 3)
+                {
+                    b.colour = Color.OrangeRed;
+                }
+                else if (b.hp == 4)
+                {
+                    b.colour = Color.Orange;
+                }
+                else if (b.hp == 5)
+                {
+                    b.colour = Color.DarkOrange;
+                }
+            }
+        }
+
+        public void levelOne()
+        {
+            // current level
+            level = 1;
+
+            // variables for block x and y values
+            string blockX;
+            string blockY;
+            int intX;
+            int intY;
+
+            // create xml reader
+            XmlReader reader = XmlReader.Create("level1.xml");
+
+            reader.ReadStartElement("level");
+
+            //Grabs all the blocks for the current level and adds them to the list
+            while (reader.Read())
+            {
+                reader.ReadToFollowing("x");
+                blockX = reader.ReadString();
+
+                reader.ReadToFollowing("y");
+                blockY = reader.ReadString();
+
+                if (blockX != "")
+                {
+                    intX = Convert.ToInt32(blockX);
+                    intY = Convert.ToInt32(blockY);
+                    Block b = new Block(intX, intY, level);
+                    blocks.Add(b);                    
+                }
+            }
+            // close reader
+            reader.Close();
         }
     }
 }
