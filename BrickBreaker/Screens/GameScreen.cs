@@ -72,7 +72,7 @@ namespace BrickBreaker
         Image bubbleball = Properties.Resources.bubbleManSupream;
         Image paddleCrab = Properties.Resources.carbPaddle;
         //List that will build highscores using a class to then commit them to a XML file
-         List<score> highScoreList = new List<score>();
+        public static List<score> highScoreList = new List<score>();
 
         // Jordan Var
 
@@ -536,7 +536,7 @@ namespace BrickBreaker
 
         }
 
-        public void HighScoreRead()
+        public static void HighScoreRead()
         {
             // create reader
             XmlReader reader = XmlReader.Create("highScores.xml");
@@ -567,7 +567,7 @@ namespace BrickBreaker
             reader.Close();
         }
 
-        public void HighScoreWrite()
+        public static void HighScoreWrite()
         {
             // create write for xml file
             XmlWriter writer = XmlWriter.Create("highScores.xml", null);
