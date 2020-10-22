@@ -144,6 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\carbPaddle.png" />
+    <None Include="Resources\bubbleManSupream.png" />
     <Content Include="Resources\highScores.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
