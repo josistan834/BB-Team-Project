@@ -212,7 +212,7 @@ namespace BrickBreaker
                         OnEnd();
                     }
 
-                    break;
+                    break;  
                 }
             }
             #endregion
