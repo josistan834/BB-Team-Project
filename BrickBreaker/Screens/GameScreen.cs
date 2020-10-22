@@ -40,6 +40,7 @@ namespace BrickBreaker
         int level;
         public static int paddleSpeed;
         public static int playerLives;
+        public static string scores;
         int playerScore; // many need to change if player score gets too high
 
         // ball values
@@ -70,7 +71,7 @@ namespace BrickBreaker
 
 
         //List that will build highscores using a class to then commit them to a XML file
-        List<score> highScoreList = new List<score>();
+         List<score> highScoreList = new List<score>();
 
         // Jordan Var
 
@@ -88,17 +89,6 @@ namespace BrickBreaker
             OnStart();
         }
 
-
-        public void DeclanMethod()
-        {
-            // Check if ball has collided with any blocks
-            
-            if (playerLives == 0)
-            {
-                gameTimer.Enabled = false;
-                OnEnd();
-            }
-        }
 
 
         public void OnStart()
@@ -382,7 +372,6 @@ namespace BrickBreaker
 
             #endregion
 
-            DeclanMethod();
 
             // Move the paddle
             if (leftArrowDown && paddle.x > 0)
@@ -429,8 +418,10 @@ namespace BrickBreaker
 
         public void OnEnd()
         {
-            HighScoreRead();
+            score pscore = new score(Convert.ToString(playerScore));
+            highScoreList.Add(pscore);
             HighScoreWrite();
+            HighScoreRead();
 
             // Goes to the game over screen
             Form form = this.FindForm();
@@ -519,7 +510,7 @@ namespace BrickBreaker
         public void HighScoreRead()
         {
             // create reader
-            XmlTextReader reader = new XmlTextReader("Resources/highScores.xml");
+            XmlReader reader = XmlReader.Create("highScores.xml");
 
             // read high score xml file
             while (reader.Read())
@@ -533,8 +524,8 @@ namespace BrickBreaker
                     // add score to high score list
                     score s = new score(numScore);
                     highScoreList.Add(s);
-
-                    //highScoreLabel.Text += s.numScore + "\n";
+                    scores += numScore + "\n";
+                     
                 }
             }
 

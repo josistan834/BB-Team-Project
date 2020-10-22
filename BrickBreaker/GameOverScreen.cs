@@ -15,6 +15,7 @@ namespace BrickBreaker
         public GameOverScreen()
         {
             InitializeComponent();
+            highscoreLabel.Text = GameScreen.scores;
         }
         private void exitButton_Click(object sender, EventArgs e)
         {
