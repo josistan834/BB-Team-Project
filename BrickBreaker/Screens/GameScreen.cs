@@ -428,6 +428,7 @@ namespace BrickBreaker
         {
             score pscore = new score(Convert.ToString(playerScore));
             highScoreList.Add(pscore);
+
             HighScoreWrite();
             HighScoreRead();
 
