@@ -18,8 +18,10 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Forms;
 using System.Media;
+using System.Xml;
 using System.Security.Cryptography.X509Certificates;
 using System.Runtime.InteropServices;
+
 
 namespace BrickBreaker
 {
@@ -38,6 +40,7 @@ namespace BrickBreaker
         int level;
         public static int paddleSpeed;
         public static int playerLives;
+        public static string scores;
         int playerScore; // many need to change if player score gets too high
 
         // ball values
@@ -57,10 +60,18 @@ namespace BrickBreaker
         SolidBrush ballBrush = new SolidBrush(Color.White);
         SolidBrush blockBrush = new SolidBrush(Color.Red);
         Pen anglePen = new Pen(Color.Red);
+
         SolidBrush extraLifeBrush = new SolidBrush(Color.Green);
         SolidBrush longPaddleBrush = new SolidBrush(Color.White);
         SolidBrush shortPaddleBrush = new SolidBrush(Color.Red);
         SolidBrush fastPaddleBrush = new SolidBrush(Color.Yellow);
+        SolidBrush fastBallBrush = new SolidBrush(Color.Blue);
+        SolidBrush oppositeBrush = new SolidBrush(Color.Pink);
+        SolidBrush oppositeBallBrush = new SolidBrush(Color.Aqua);
+
+
+        //List that will build highscores using a class to then commit them to a XML file
+         List<score> highScoreList = new List<score>();
 
         // Jordan Var
 
@@ -68,6 +79,7 @@ namespace BrickBreaker
         Random randJord = new Random();
         int powerPick;
         int powerDec;
+
         #endregion
 
         public GameScreen()
@@ -77,37 +89,7 @@ namespace BrickBreaker
             OnStart();
         }
 
-        public void DeclanMethod()
-        {
-            // Check if ball has collided with any blocks
-            foreach (Block b in blocks)
-            {
-                if (ball.BlockCollision(b)) // block health decreases when hit by ball
-                {
-                    b.hp--;
 
-                    if (b.hp > 0) // player score increases when the ball hits a block
-                    {
-                        playerScore = playerScore + 50; // update score
-                        scoreLabel.Text = playerScore + ""; // display updated score
-                    }
-                    else if (b.hp == 0) // remove block from screen if its health is zero
-                    {
-                        playerScore = playerScore + 100; // update score
-                        scoreLabel.Text = playerScore + ""; // display updated score
-                        blocks.Remove(b);
-                    } 
-                    
-                    if (blocks.Count == 0) // go to next level if player finishes current level
-                    {
-                        gameTimer.Enabled = false;
-                        OnEnd(); 
-                    }
-
-                    break;
-                }
-            }
-        }
 
         public void OnStart()
         {
@@ -115,8 +97,8 @@ namespace BrickBreaker
             playerLives = 3;
 
             // display life and score values
-            scoreLabel.Text = playerScore + "";
-            lifeLabel.Text = playerLives + "";
+            scoreLab.Text = playerScore + "";
+            lifeLab.Text = playerLives + "";
 
             //set all button presses to false.
             leftArrowDown = rightArrowDown = pArrowDown = false;
@@ -146,23 +128,8 @@ namespace BrickBreaker
 
             powerPick = randJord.Next(1, 3);
 
-   
 
-            #region Creates blocks for generic level. Need to replace with code that loads levels.
-
-            //TODO - replace all the code in this region eventually with code that loads levels from xml files
-
-            blocks.Clear();
-            int x = 10;
-
-            while (blocks.Count() < 12)
-            {
-                x += 57;
-                Block b1 = new Block(x, 10, 1, Color.White);
-                blocks.Add(b1);
-            }
-
-            #endregion
+            levelOne(); // call level one method
 
             // start the game engine loop
             gameTimer.Enabled = true;
@@ -182,16 +149,26 @@ namespace BrickBreaker
             {
 
                 playerLives--;
-                ball.x = this.Width / 2 - 10 - (paddle.width/2); 
-                ball.y = this.Height - paddle.height - 80;
-                ball.ballUp = true;
-                paddle.x = this.Width / 2 - paddle.width;
+                paddle.width = 80;
+                paddle.speed = 8;
+                ball.xSpeed = 6;
+                ball.ySpeed = 6;
+                Paddle.opp = false;
+                Ball.oppBall = false;
+                lifeLab.Text = playerLives + ""; // display updated life count
+
+                //Move paddle to middle
+                paddle.x = (this.Width / 2 - paddle.width);
+                // Moves the ball back to origin
+                ball.x = ((paddle.x - (ball.size / 2)) + (paddle.width / 2));
+                ball.y = (this.Height - paddle.height) - 85;
+                ball.ballUp = true;               
                 Refresh();
                 if(playerLives != 0)
                 {
                     Thread.Sleep(2000);
                 }
-                
+
                 if (playerLives == 0)
                 {
                     
@@ -202,13 +179,29 @@ namespace BrickBreaker
 
             // Check for collision of ball with paddle, (incl. paddle movement)
             ball.PaddleCollision(paddle, leftArrowDown, rightArrowDown);
-           
+
             // Check if ball has collided with any blocks
             foreach (Block b in blocks)
             {
                 if (ball.BlockCollision(b))
                 {
-                    blocks.Remove(b);
+                    b.hp--;
+                    BlockColour();
+                    if (b.hp > 0) // player score increases when the ball hits a block
+                    {
+                        
+                        playerScore = playerScore + 50; // update score
+                        scoreLab.Text = playerScore + ""; // display updated score
+                    }
+
+                    else  // remove block from screen if its health is zero
+                    {
+                        playerScore = playerScore + 100; // update score
+                        scoreLab.Text = playerScore + ""; // display updated score
+                        blocks.Remove(b);
+                    }
+
+                    
                     powerDec = randJord.Next(1, 100);
                     if (powerDec > 1 && powerDec < 100)
                     {
@@ -220,7 +213,7 @@ namespace BrickBreaker
                         OnEnd();
                     }
 
-                    break;
+                    break;  
                 }
             }
             #endregion
@@ -280,22 +273,18 @@ namespace BrickBreaker
             pArrowDown = false;
             gameTimer.Stop();
             stop = true;
+            label1.Visible = true;
+            playButton.Visible = true;
+            exitButton.Visible = true;
+            playButton.Focus();
 
-            if (stop == true)
-            {
-                if (pArrowDown == true)
-                {
-                    stop = false;
-                    gameTimer.Start();
-
-                }
-            }
         }
+
 
         public void JordanMethod()
         {
 
-            powerPick = randJord.Next(1, 5);
+            powerPick = randJord.Next(1, 8);
             if (powerPick == 1)
 
             {
@@ -318,14 +307,56 @@ namespace BrickBreaker
                 PowerUps fastPaddle = new PowerUps(ball.x, ball.y, 20, 20, "fastPaddle");
                 powers.Add(fastPaddle);
             }
+            else if (powerPick == 5)
+            {
+                PowerUps fastBall = new PowerUps(ball.x, ball.y, 20, 20, "fastBall");
+                powers.Add(fastBall);
+            }
+            else if (powerPick == 6)
+            {
+                PowerUps oppositeDir = new PowerUps(ball.x, ball.y, 20, 20, "oppositeDir");
+                powers.Add(oppositeDir);
+            }
+            else if (powerPick == 7)
+            {
+                PowerUps oppositeBall = new PowerUps(ball.x, ball.y, 20, 20, "oppositeBall");
+                powers.Add(oppositeBall);
+            }
         }
+
+        private void playButton_Click(object sender, EventArgs e)
+        {
+            label1.Visible = false;
+            playButton.Visible = false;
+            exitButton.Visible = false;
+            gameTimer.Start();
+            this.Focus();
+        }
+
+        private void exitButton_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void playenter(object sender, EventArgs e)
+        {
+            exitButton.BackColor = Color.MediumSpringGreen;
+            playButton.BackColor = Color.PaleTurquoise;
+        }
+
+        private void exitenter(object sender, EventArgs e)
+        {
+            playButton.BackColor = Color.MediumSpringGreen;
+            exitButton.BackColor = Color.PaleTurquoise;
+        }
+
         private void gameTimer_Tick(object sender, EventArgs e)
         {
             #region PowerUp
             // power ups fall
             for (int i = 0; i < powers.Count(); i++)
             {
-                powers[i].y += 5;
+                powers[i].y += 8;
                 if (powers[i].y > this.Height - 30)
 
                 {
@@ -335,22 +366,36 @@ namespace BrickBreaker
             foreach (PowerUps p in powers)
             {
                 paddle.PowerUpCollision(p);
+                ball.PowerUpBCollision(p, paddle);
+
             }
-            
+
             #endregion
-            
-            DeclanMethod();
 
 
             // Move the paddle
             if (leftArrowDown && paddle.x > 0)
             {
+                if (Paddle.opp == true)
+                {
+                    paddle.Move("right");
+                }
+                else
+                {
+                    paddle.Move("left");
+                }  
 
-                paddle.Move("left");
             }
             if (rightArrowDown && paddle.x < (this.Width - paddle.width))
             {
-                paddle.Move("right");
+                if (Paddle.opp == true)
+                {
+                    paddle.Move("left");
+                }
+                else
+                {
+                    paddle.Move("right");
+                }
             }
 
 
@@ -373,8 +418,14 @@ namespace BrickBreaker
 
         public void OnEnd()
         {
+            score pscore = new score(Convert.ToString(playerScore));
+            highScoreList.Add(pscore);
+            HighScoreWrite();
+            HighScoreRead();
+
             // Goes to the game over screen
             Form form = this.FindForm();
+
             GameOverScreen go = new GameOverScreen();
 
             go.Location = new Point((form.Width - go.Width) / 2, (form.Height - go.Height) / 2);
@@ -392,6 +443,28 @@ namespace BrickBreaker
             // Draws blocks
             foreach (Block b in blocks)
             {
+                if (b.hp == 1)
+                {
+                    b.colour = Color.LightYellow;
+                }
+                else if (b.hp == 2)
+                {
+                    b.colour = Color.Yellow;
+                }
+                else if (b.hp == 3)
+                {
+                    b.colour = Color.OrangeRed;
+                }
+                else if (b.hp == 4)
+                {
+                    b.colour = Color.Orange;
+                }
+                else if (b.hp == 5)
+                {
+                    b.colour = Color.DarkOrange;
+                }
+                blockBrush.Color = b.colour;
+
                 e.Graphics.FillRectangle(blockBrush, b.x, b.y, b.width, b.height);
             }
 
@@ -414,12 +487,143 @@ namespace BrickBreaker
                 {
                     e.Graphics.FillEllipse(fastPaddleBrush, p.x, p.y, p.width, p.height);
                 }
+                else if (p.power == "fastBall")
+                {
+                    e.Graphics.FillEllipse(fastBallBrush, p.x, p.y, p.width, p.height);
+                }
+                else if (p.power == "oppositeDir")
+                {
+                    e.Graphics.FillEllipse(oppositeBrush, p.x, p.y, p.width, p.height);
+                }
+                else if (p.power == "oppositeBall")
+                {
+                    e.Graphics.FillEllipse(oppositeBallBrush, p.x, p.y, p.width, p.height);
+                }
             }
-            
+
 
             // Draws ball
             e.Graphics.FillRectangle(ballBrush, ball.x, ball.y, ball.size, ball.size);
 
+        }
+
+        public void HighScoreRead()
+        {
+            // create reader
+            XmlReader reader = XmlReader.Create("highScores.xml");
+
+            // read high score xml file
+            while (reader.Read())
+            {
+                // take high score values from high score xml file
+                if (reader.NodeType == XmlNodeType.Text)
+                {
+                    reader.ReadToNextSibling("score");
+                    string numScore = reader.ReadString();
+
+                    // add score to high score list
+                    score s = new score(numScore);
+                    highScoreList.Add(s);
+                    scores += numScore + "\n";
+                     
+                }
+            }
+
+            // remove the lowest high score if there are already 10 scores when adding a new score 
+            if (highScoreList.Count > 10)
+            {
+                highScoreList.RemoveAt(10);
+            }
+
+            reader.Close();
+        }
+
+        public void HighScoreWrite()
+        {
+            // create write for xml file
+            XmlWriter writer = XmlWriter.Create("highScores.xml", null);
+
+            // start writer
+            writer.WriteStartElement("Highscores");
+
+            // write every score in high score list
+            foreach (score s in highScoreList)
+            {
+                writer.WriteStartElement("playerScore");
+
+                writer.WriteElementString("score", s.numScore);
+
+                writer.WriteEndElement();
+            }
+
+            // end and close writer
+            writer.WriteEndElement();
+            writer.Close();
+        }
+
+        public void BlockColour()
+        {
+            // change block colour based on the block's health
+            foreach (Block b in blocks)
+            {
+                if (b.hp == 1)
+                {
+                    b.colour = Color.LightYellow;
+                }
+                else if (b.hp == 2)
+                {
+                    b.colour = Color.Yellow;
+                }
+                else if (b.hp == 3)
+                {
+                    b.colour = Color.OrangeRed;
+                }
+                else if (b.hp == 4)
+                {
+                    b.colour = Color.Orange;
+                }
+                else if (b.hp == 5)
+                {
+                    b.colour = Color.DarkOrange;
+                }
+            }
+        }
+
+        public void levelOne()
+        {
+            // current level
+            level = 1;
+
+            // variables for block x and y values
+            string blockX;
+            string blockY;
+            int intX;
+            int intY;
+
+            // create xml reader
+            XmlTextReader reader = new XmlTextReader($"Resources/level{level}.xml");
+
+            reader.ReadStartElement("level");
+
+            //Grabs all the blocks for the current level and adds them to the list
+            while (reader.Read())
+            {
+                reader.ReadToFollowing("x");
+                blockX = reader.ReadString();
+
+                reader.ReadToFollowing("y");
+                blockY = reader.ReadString();
+
+                if (blockX != "")
+                {
+                    intX = Convert.ToInt32(blockX);
+                    intY = Convert.ToInt32(blockY);
+                    Block b = new Block(intX, intY, level);
+                    blocks.Add(b);                    
+                }
+            }
+            // close reader
+            reader.Close();
         }
     }
 }

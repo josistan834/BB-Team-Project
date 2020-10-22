@@ -9,6 +9,7 @@ namespace BrickBreaker
         public int x, y, xSpeed, ySpeed, size;
         public Boolean ballRight, ballUp;
         public Color colour;
+        public static bool oppBall = false;
 
         public static Random rand = new Random();
 
@@ -91,15 +92,27 @@ namespace BrickBreaker
             if (x <= 1)
             {
                 ballRight = true;
+                if (oppBall == true)
+                {
+                    ballUp = false;
+                }
             }
             else if (x >= (UC.Width - size))
             {
                 ballRight = false;
+                if (oppBall == true)
+                {
+                    ballUp = false;
+                }
             }
             // Collision with top wall, goes down
             if (y <= 2)
             {
                 ballUp = false;
+                if (oppBall == true)
+                {
+                    ballRight = !ballRight;
+                }
             }
         }
 
@@ -114,8 +127,32 @@ namespace BrickBreaker
 
             return didCollide;
         }
+        public void PowerUpBCollision(PowerUps p, Paddle s)
+        {
+            Rectangle powerRec = new Rectangle(p.x, p.y, p.width, p.height);
+            Rectangle paddleRec = new Rectangle(s.x, s.y, s.width, s.height);
+            if (p.power == "fastBall")
+            {
+                if (paddleRec.IntersectsWith(powerRec))
+                {
+                    xSpeed += 3;
+                    ySpeed += 3;
+                    p.x = 2000;
+                }
+            }
+            else if (p.power == "oppositeBall")
+            {
+                if (paddleRec.IntersectsWith(powerRec))
+                {
+                    xSpeed += 0;
+                    ySpeed += 2;
+                    oppBall = true;
+                    p.x = 2000;
+                }
+            }
+        }
 
-        
+
 
     }
 }
