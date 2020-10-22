@@ -568,7 +568,7 @@ namespace BrickBreaker
             int intY;
 
             // create xml reader
-            XmlReader reader = XmlReader.Create("level1.xml");
+            XmlTextReader reader = new XmlTextReader($"Resources/level{level}.xml");
 
             reader.ReadStartElement("level");
 
