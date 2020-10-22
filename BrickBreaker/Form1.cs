@@ -22,6 +22,9 @@ namespace BrickBreaker
         public static SoundPlayer seagulSound = new SoundPlayer(Properties.Resources.seagul);
         public static SoundPlayer collisionSound = new SoundPlayer(Properties.Resources.collision);
         public static SoundPlayer breakBrick = new SoundPlayer(Properties.Resources.score);
+        public static SoundPlayer loseSound = new SoundPlayer(Properties.Resources.lose);
+        public static SoundPlayer winSound = new SoundPlayer(Properties.Resources.brickBreak);
+
 
         public Form1()
         {
