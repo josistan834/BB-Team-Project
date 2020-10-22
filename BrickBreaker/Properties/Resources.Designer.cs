@@ -73,6 +73,15 @@ namespace BrickBreaker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
         /// </summary>
+        internal static System.IO.UnmanagedMemoryStream brickBreak {
+            get {
+                return ResourceManager.GetStream("brickBreak", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
         internal static System.IO.UnmanagedMemoryStream bubbles_sfx {
             get {
                 return ResourceManager.GetStream("bubbles_sfx", resourceCulture);
@@ -103,6 +112,24 @@ namespace BrickBreaker.Properties {
         internal static System.IO.UnmanagedMemoryStream collision {
             get {
                 return ResourceManager.GetStream("collision", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream exit_cue_y {
+            get {
+                return ResourceManager.GetStream("exit_cue_y", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream lose {
+            get {
+                return ResourceManager.GetStream("lose", resourceCulture);
             }
         }
         

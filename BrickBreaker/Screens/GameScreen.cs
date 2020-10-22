@@ -147,6 +147,7 @@ namespace BrickBreaker
             // Check for ball hitting bottom of screen
             if (ball.BottomCollision(this))
             {
+                Form1.loseSound.Play();
 
                 playerLives--;
                 paddle.width = 80;
@@ -196,6 +197,7 @@ namespace BrickBreaker
 
                     else  // remove block from screen if its health is zero
                     {
+                        Form1.breakBrick.Play();
                         playerScore = playerScore + 100; // update score
                         scoreLab.Text = playerScore + ""; // display updated score
                         blocks.Remove(b);
@@ -209,6 +211,7 @@ namespace BrickBreaker
                     }
                     if (blocks.Count == 0)
                     {
+                        Form1.winSound.PlaySync();
                         gameTimer.Enabled = false;
                         OnEnd();
                     }
