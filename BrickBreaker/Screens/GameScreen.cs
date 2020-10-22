@@ -429,8 +429,8 @@ namespace BrickBreaker
 
         public void OnEnd()
         {
-            HighScoreRead();
             HighScoreWrite();
+            HighScoreRead();
 
             // Goes to the game over screen
             Form form = this.FindForm();
