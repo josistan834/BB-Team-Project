@@ -1,7 +1,5 @@
 ﻿/*  
-
  *  Created by: Calem, Declan, Kyle, Jordan, Josiah, Phaedra
-
  *  Project: Brick Breaker
  *  Date: Oct, 2020 
  */ 
@@ -25,7 +23,7 @@ namespace BrickBreaker
         #region global values
 
         //player1 button control keys - DO NOT CHANGE
-        Boolean leftArrowDown, rightArrowDown, upArrowDown;
+        Boolean leftArrowDown, rightArrowDown, upArrowDown, aimMode;
 
         // Game values
         int level;
@@ -38,14 +36,13 @@ namespace BrickBreaker
         double yInt = 1;
 
         // ball values
-        int xSpeed = 0;
-        int ySpeed = 0;
+        int xSpeed = 6;
+        int ySpeed = 6;
         int ballSize = 20;
 
         //pen values
         int lineX1;
         int lineX2;
-
         int lineY1;
         int lineY2;
 
@@ -137,7 +134,7 @@ namespace BrickBreaker
             int ballX = this.Width / 2 - 10;
             int ballY = this.Height - paddle.height - 80;
 
-            //AngleMethod();
+            
 
             //starts ball moving up and right
             bool ballRight = true;
@@ -146,10 +143,11 @@ namespace BrickBreaker
             #endregion
 
             // chooses starting powerUp
-
             powerPick = randJord.Next(1, 3);
 
-   
+            //start aiming
+            aimMode = true;
+            AngleMethod();
 
             #region Creates blocks for generic level. Need to replace with code that loads levels.
 
@@ -182,15 +180,17 @@ namespace BrickBreaker
             // Check for ball hitting bottom of screen
             if (ball.BottomCollision(this))
             {
+                playerLives--;
 
                 //AngleMethod();
 
-                //if (lives == 0)
+
                 if (playerLives == 0)
                 {
                     gameTimer.Enabled = false;
                     OnEnd();
                 }
+                
             }
 
             // Check for collision of ball with paddle, (incl. paddle movement)
@@ -220,33 +220,43 @@ namespace BrickBreaker
         }
 
         //TODO - finish angling 
-        //public void AngleMethod()
-        //{
+        public void AngleMethod()
+        {
 
-        //    lineX2 = ball.x;
-        //    lineY2 = ball.y;
+            lineX2 = ball.x;
+            lineY2 = ball.y;
 
-        //    //
-        //    if (yInt == 1 && xInt == 0)
-        //    {
-        //        ball.xSpeed = 0;
-        //        lineX1 = this.Width / 2;
-        //        lineY1 = this.Height - 200;
+            lineX1 = ball.x;
+            lineY1 = ball.y - 200;
 
 
-        //    }
-        //    else if (yInt == 1 && xInt ==1)
-        //    {
-        //        ball.xSpeed = 6;
-        //        ball.ySpeed = 6;
-        //    }
-        //    else if (yInt == 1 && xInt == -1)
-        //    {
-        //        ball.xSpeed = -6;
-        //        ball.ySpeed = 6;
-        //    }
+            if (aimMode == true)
+            {
+                //nothing moves while aiming
+                ball.xSpeed = 0;
+                ball.ySpeed = 0;
+                paddleSpeed = 0;
 
-        //}
+                
+
+                if (leftArrowDown == true)
+                { 
+                
+                }
+                if (rightArrowDown == true)
+                {
+
+                }
+
+                if (upArrowDown == true)
+                {
+                    aimMode = false;
+                }
+            }
+
+            
+
+        }
 
         private void GameScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
@@ -311,6 +321,7 @@ namespace BrickBreaker
                 powers.Add(fastPaddle);
             }
         }
+
         private void gameTimer_Tick(object sender, EventArgs e)
         {
             #region PowerUp
@@ -332,6 +343,7 @@ namespace BrickBreaker
             
             DeclanMethod();
 
+            CalemMethod();
 
             // Move the paddle
             if (leftArrowDown && paddle.x > 0)
@@ -342,10 +354,6 @@ namespace BrickBreaker
             {
                 paddle.Move("right");
             }
-
-
-            CalemMethod();
-
 
             //redraw the screen
             Refresh();
@@ -400,7 +408,7 @@ namespace BrickBreaker
             // Draws ball
             e.Graphics.FillRectangle(ballBrush, ball.x, ball.y, ball.size, ball.size);
 
-            e.Graphics.DrawLine(anglePen, ball.x, ball.y - 400, 10, 400);
+            e.Graphics.DrawLine(anglePen, lineX2, lineY2, lineX1, lineY1);
         }
     }
 }
