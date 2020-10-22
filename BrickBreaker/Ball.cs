@@ -110,6 +110,7 @@ namespace BrickBreaker
             // Collision with left wall, goes right
             if (x <= 1)
             {
+                Form1.collisionSound.Play();
                 ballRight = true;
                 //if (oppBall == true)
                 //{
@@ -118,6 +119,7 @@ namespace BrickBreaker
             }
             else if (x >= (UC.Width - size))
             {
+                Form1.collisionSound.Play();
                 ballRight = false;
                 //if (oppBall == true)
                 //{
@@ -127,6 +129,7 @@ namespace BrickBreaker
             // Collision with top wall, goes down
             if (y <= 2)
             {
+                Form1.collisionSound.Play();
                 ballUp = false;
                 //if (oppBall == true)
                 //{

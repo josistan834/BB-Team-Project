@@ -70,7 +70,8 @@ namespace BrickBreaker
         SolidBrush oppositeBrush = new SolidBrush(Color.Pink);
         SolidBrush oppositeBallBrush = new SolidBrush(Color.Aqua);
 
-
+        Image bubbleball = Properties.Resources.bubbleManSupream;
+        Image paddleCrab = Properties.Resources.carbPaddle;
         //List that will build highscores using a class to then commit them to a XML file
          List<score> highScoreList = new List<score>();
 
@@ -86,6 +87,7 @@ namespace BrickBreaker
         public GameScreen()
         {
             InitializeComponent();
+            
             Form1.seagulSound.Stop();
             OnStart();
         }
@@ -94,6 +96,8 @@ namespace BrickBreaker
 
         public void OnStart()
         {
+            //level
+            level = 1;
             //set life counter
             playerLives = 3;
 
@@ -148,6 +152,7 @@ namespace BrickBreaker
             // Check for ball hitting bottom of screen
             if (ball.BottomCollision(this))
             {
+                Form1.loseSound.Play();
 
                 playerLives--;
                 paddle.width = 80;
@@ -197,6 +202,7 @@ namespace BrickBreaker
 
                     else  // remove block from screen if its health is zero
                     {
+                        Form1.breakBrick.Play();
                         playerScore = playerScore + 100; // update score
                         scoreLab.Text = playerScore + ""; // display updated score
                         blocks.Remove(b);
@@ -208,10 +214,11 @@ namespace BrickBreaker
                     {
                         JordanMethod();
                     }
-                    if (blocks.Count == 0)
+                    if (blocks.Count == 0 && level < 10)
                     {
-                        gameTimer.Enabled = false;
-                        OnEnd();
+                        Form1.winSound.PlaySync();
+                        level++;
+                        levelOne();
                     }
 
                     break;  
@@ -341,14 +348,15 @@ namespace BrickBreaker
 
         private void playenter(object sender, EventArgs e)
         {
-            exitButton.BackColor = Color.MediumSpringGreen;
-            playButton.BackColor = Color.PaleTurquoise;
+            playButton.BackColor = Color.MediumSpringGreen;
+            exitButton.BackColor = Color.PaleTurquoise;
         }
 
         private void exitenter(object sender, EventArgs e)
         {
-            playButton.BackColor = Color.MediumSpringGreen;
-            exitButton.BackColor = Color.PaleTurquoise;
+          
+            exitButton.BackColor = Color.MediumSpringGreen;
+            playButton.BackColor = Color.PaleTurquoise;
         }
 
         private void gameTimer_Tick(object sender, EventArgs e)
@@ -421,6 +429,7 @@ namespace BrickBreaker
         {
             score pscore = new score(Convert.ToString(playerScore));
             highScoreList.Add(pscore);
+
             HighScoreWrite();
             HighScoreRead();
 
@@ -439,7 +448,7 @@ namespace BrickBreaker
         {
             // Draws paddle
             paddleBrush.Color = paddle.colour;
-            e.Graphics.FillRectangle(paddleBrush, paddle.x, paddle.y, paddle.width, paddle.height);
+            e.Graphics.DrawImage(paddleCrab, paddle.x, paddle.y, paddle.width, paddle.height + 30);
 
             // Draws blocks
             foreach (Block b in blocks)
@@ -463,6 +472,26 @@ namespace BrickBreaker
                 else if (b.hp == 5)
                 {
                     b.colour = Color.DarkOrange;
+                }
+                else if (b.hp == 6)
+                {
+                    b.colour = Color.PaleTurquoise;
+                }
+                else if (b.hp == 7)
+                {
+                    b.colour = Color.DarkCyan;
+                }
+                else if (b.hp == 8)
+                {
+                    b.colour = Color.DarkBlue;
+                }
+                else if (b.hp == 9)
+                {
+                    b.colour = Color.DeepPink;
+                }
+                else if (b.hp == 10)
+                {
+                    b.colour = Color.Pink;
                 }
                 blockBrush.Color = b.colour;
 
@@ -504,7 +533,7 @@ namespace BrickBreaker
 
 
             // Draws ball
-            e.Graphics.FillRectangle(ballBrush, ball.x, ball.y, ball.size, ball.size);
+            e.Graphics.DrawImage(bubbleball, ball.x, ball.y, ball.size +5, ball.size +5);
 
         }
 
@@ -593,7 +622,7 @@ namespace BrickBreaker
         public void levelOne()
         {
             // current level
-            level = 1;
+            
 
             // variables for block x and y values
             string blockX;
