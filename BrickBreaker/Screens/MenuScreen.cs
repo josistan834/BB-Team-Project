@@ -58,12 +58,50 @@ namespace BrickBreaker
         {
             exitButton.BackColor = Color.MediumSpringGreen;
             playButton.BackColor = Color.PaleTurquoise;
+            instructionsButton.BackColor = Color.PaleTurquoise;
         }
 
         private void playButton_Enter(object sender, EventArgs e)
         {
             playButton.BackColor = Color.MediumSpringGreen;
             exitButton.BackColor = Color.PaleTurquoise;
+            instructionsButton.BackColor = Color.PaleTurquoise;
+        }
+
+        private void instructionsButton_Click(object sender, EventArgs e)
+        {
+            playButton.Visible = false;
+            exitButton.Visible = false;
+            instructionsButton.Visible = false;
+            instructionsLabel.Visible = true;
+            button1.Visible = true;
+            label3.Visible = true;
+            label4.Visible = true;
+            label5.Visible = true;
+        }
+
+        private void instructionsButton_Enter(object sender, EventArgs e)
+        {
+            playButton.BackColor = Color.PaleTurquoise;
+            exitButton.BackColor = Color.PaleTurquoise;
+            instructionsButton.BackColor = Color.MediumSpringGreen;
+        }
+
+        private void button1_Enter(object sender, EventArgs e)
+        {
+            button1.BackColor = Color.MediumSpringGreen;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            playButton.Visible = true;
+            exitButton.Visible = true;
+            instructionsButton.Visible = true;
+            instructionsLabel.Visible = false;
+            button1.Visible = false;
+            label3.Visible = false;
+            label4.Visible = false;
+            label5.Visible = false;
         }
     }
 }
