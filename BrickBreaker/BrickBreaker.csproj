@@ -146,6 +146,8 @@
     <None Include="Resources\peeeooop_x.wav" />
     <None Include="Resources\fanfare_x.wav" />
     <None Include="Resources\exit_cue_y.wav" />
+    <None Include="Resources\carbPaddle.png" />
+    <None Include="Resources\bubbleManSupream.png" />
     <Content Include="Resources\highScores.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
