@@ -88,35 +88,7 @@ namespace BrickBreaker
         public void DeclanMethod()
         {
             // Check if ball has collided with any blocks
-            foreach (Block b in blocks)
-            {
-                if (ball.BlockCollision(b)) // block health decreases when hit by ball
-                {
-                    b.hp--;
-                    BlockColour();
-
-                    if (b.hp > 0) // player score increases when the ball hits a block
-                    {
-                        playerScore = playerScore + 50; // update score
-                        scoreLabel.Text = playerScore + ""; // display updated score
-                    }
-                    else if (b.hp == 0) // remove block from screen if its health is zero
-                    {
-                        playerScore = playerScore + 100; // update score
-                        scoreLabel.Text = playerScore + ""; // display updated score
-                        blocks.Remove(b);
-                    }
-
-                    if (blocks.Count == 0) // go to next level if player finishes current level
-                    {
-                        gameTimer.Enabled = false;
-                        OnEnd();
-                    }
-
-                    break;
-                }
-            }
-
+            
             if (playerLives == 0)
             {
                 gameTimer.Enabled = false;
@@ -131,8 +103,8 @@ namespace BrickBreaker
             playerLives = 3;
 
             // display life and score values
-            scoreLabel.Text = playerScore + "";
-            lifeLabel.Text = playerLives + "";
+            scoreLab.Text = playerScore + "";
+            lifeLab.Text = playerLives + "";
 
             //set all button presses to false.
             leftArrowDown = rightArrowDown = pArrowDown = false;
@@ -183,7 +155,7 @@ namespace BrickBreaker
             {
 
                 playerLives--;
-                lifeLabel.Text = playerLives + ""; // display updated life count
+                lifeLab.Text = playerLives + ""; // display updated life count
                 //Move paddle to middle
                 paddle.x = (this.Width / 2 - paddle.width);
                 // Moves the ball back to origin
@@ -212,7 +184,23 @@ namespace BrickBreaker
             {
                 if (ball.BlockCollision(b))
                 {
-                    blocks.Remove(b);
+                    b.hp--;
+                    BlockColour();
+                    if (b.hp > 0) // player score increases when the ball hits a block
+                    {
+                        
+                        playerScore = playerScore + 50; // update score
+                        scoreLab.Text = playerScore + ""; // display updated score
+                    }
+
+                    else  // remove block from screen if its health is zero
+                    {
+                        playerScore = playerScore + 100; // update score
+                        scoreLab.Text = playerScore + ""; // display updated score
+                        blocks.Remove(b);
+                    }
+
+                    
                     powerDec = randJord.Next(1, 100);
                     if (powerDec > 1 && powerDec < 100)
                     {
@@ -477,7 +465,7 @@ namespace BrickBreaker
         public void HighScoreRead()
         {
             // create reader
-            XmlReader reader = XmlReader.Create("highScores.xml");
+            XmlTextReader reader = new XmlTextReader("Resources/highScores.xml");
 
             // read high score xml file
             while (reader.Read())

@@ -35,6 +35,8 @@
             this.playButton = new System.Windows.Forms.Button();
             this.exitButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.lifeLab = new System.Windows.Forms.Label();
+            this.scoreLab = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // gameTimer
@@ -114,6 +116,33 @@
             this.label1.Text = "Paused";
             this.label1.Visible = false;
             // 
+            // lifeLab
+            // 
+            this.lifeLab.AutoSize = true;
+            this.lifeLab.BackColor = System.Drawing.Color.Transparent;
+            this.lifeLab.Font = new System.Drawing.Font("Comic Sans MS", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lifeLab.ForeColor = System.Drawing.Color.DarkBlue;
+            this.lifeLab.Location = new System.Drawing.Point(793, 404);
+            this.lifeLab.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lifeLab.Name = "lifeLab";
+            this.lifeLab.Size = new System.Drawing.Size(58, 67);
+            this.lifeLab.TabIndex = 5;
+            this.lifeLab.Text = "0";
+            this.lifeLab.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // scoreLab
+            // 
+            this.scoreLab.AutoSize = true;
+            this.scoreLab.BackColor = System.Drawing.Color.Transparent;
+            this.scoreLab.Font = new System.Drawing.Font("Comic Sans MS", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.scoreLab.ForeColor = System.Drawing.Color.DarkBlue;
+            this.scoreLab.Location = new System.Drawing.Point(2, 404);
+            this.scoreLab.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.scoreLab.Name = "scoreLab";
+            this.scoreLab.Size = new System.Drawing.Size(116, 67);
+            this.scoreLab.TabIndex = 6;
+            this.scoreLab.Text = "100";
+            // 
             // GameScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -121,6 +150,8 @@
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.BackgroundImage = global::BrickBreaker.Properties.Resources.background1;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Controls.Add(this.scoreLab);
+            this.Controls.Add(this.lifeLab);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.exitButton);
             this.Controls.Add(this.playButton);
@@ -143,5 +174,7 @@
         private System.Windows.Forms.Button playButton;
         private System.Windows.Forms.Button exitButton;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lifeLab;
+        private System.Windows.Forms.Label scoreLab;
     }
 }
