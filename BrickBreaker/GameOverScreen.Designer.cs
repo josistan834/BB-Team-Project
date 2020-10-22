@@ -32,6 +32,8 @@
             this.exitButton = new System.Windows.Forms.Button();
             this.playButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.highscoreLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
@@ -93,18 +95,45 @@
             this.label1.TabIndex = 8;
             this.label1.Text = "GAME OVER";
             // 
+            // label2
+            // 
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.Font = new System.Drawing.Font("Comic Sans MS", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.Color.DarkBlue;
+            this.label2.Location = new System.Drawing.Point(413, 153);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(371, 69);
+            this.label2.TabIndex = 9;
+            this.label2.Text = "High Scores:";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // highscoreLabel
+            // 
+            this.highscoreLabel.BackColor = System.Drawing.Color.Transparent;
+            this.highscoreLabel.Font = new System.Drawing.Font("Comic Sans MS", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.highscoreLabel.ForeColor = System.Drawing.Color.AliceBlue;
+            this.highscoreLabel.Location = new System.Drawing.Point(413, 205);
+            this.highscoreLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.highscoreLabel.Name = "highscoreLabel";
+            this.highscoreLabel.Size = new System.Drawing.Size(371, 272);
+            this.highscoreLabel.TabIndex = 10;
+            this.highscoreLabel.Text = "10000000000000000";
+            // 
             // GameOverScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackgroundImage = global::BrickBreaker.Properties.Resources.background1;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Controls.Add(this.highscoreLabel);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.exitButton);
             this.Controls.Add(this.playButton);
             this.DoubleBuffered = true;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "GameOverScreen";
             this.Size = new System.Drawing.Size(853, 541);
             this.ResumeLayout(false);
@@ -118,5 +147,7 @@
         private System.Windows.Forms.Button exitButton;
         private System.Windows.Forms.Button playButton;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label highscoreLabel;
     }
 }
