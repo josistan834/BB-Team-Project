@@ -253,7 +253,7 @@ namespace BrickBreaker
         public void JordanMethod()
         {
 
-            powerPick = randJord.Next(7, 8);
+            powerPick = randJord.Next(1, 8);
             if (powerPick == 1)
             {
                 PowerUps extraLife = new PowerUps(ball.x, ball.y, 20, 20, "extraLife");
