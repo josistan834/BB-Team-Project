@@ -55,8 +55,27 @@ namespace BrickBreaker
 
             if (ballRec.IntersectsWith(blockRec))
             {
-                //ball changes up/down direction
-                ballUp = !ballUp;
+                if (x < b.x / 2 && ballRight == true)
+                {
+                    ballRight = true;
+                    ballUp = false;
+                }
+                else if (x < b.x / 2 && ballRight == false)
+                {
+                    ballRight = false;
+                    ballUp = false;
+                }
+                else if (x > b.x / 2 && ballRight == true)
+                {
+                    ballRight = true;
+                    ballUp = false;
+                }
+                else if (x > b.x / 2 && ballRight == false)
+                {
+                    ballRight = false;
+                    ballUp = false;
+                }
+
             }
 
             return blockRec.IntersectsWith(ballRec);         
@@ -92,27 +111,27 @@ namespace BrickBreaker
             if (x <= 1)
             {
                 ballRight = true;
-                if (oppBall == true)
-                {
-                    ballUp = false;
-                }
+                //if (oppBall == true)
+                //{
+                //    ballUp = false;
+                //}
             }
             else if (x >= (UC.Width - size))
             {
                 ballRight = false;
-                if (oppBall == true)
-                {
-                    ballUp = false;
-                }
+                //if (oppBall == true)
+                //{
+                //    ballUp = false;
+                //}
             }
             // Collision with top wall, goes down
             if (y <= 2)
             {
                 ballUp = false;
-                if (oppBall == true)
-                {
-                    ballRight = !ballRight;
-                }
+                //if (oppBall == true)
+                //{
+                //    ballRight = !ballRight;
+                //}
             }
         }
 
