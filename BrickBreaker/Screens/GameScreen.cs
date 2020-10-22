@@ -438,7 +438,7 @@ namespace BrickBreaker
         {
             // Draws paddle
             paddleBrush.Color = paddle.colour;
-            e.Graphics.DrawImage(Properties.Resources.carbPaddle, paddle.x, paddle.y, paddle.width, paddle.height);
+            e.Graphics.DrawImage(Properties.Resources.carbPaddle, paddle.x, paddle.y, paddle.width, paddle.height + 30);
 
             // Draws blocks
             foreach (Block b in blocks)
