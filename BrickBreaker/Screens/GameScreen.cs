@@ -87,7 +87,6 @@ namespace BrickBreaker
         public GameScreen()
         {
             InitializeComponent();
-            
             Form1.seagulSound.Stop();
             OnStart();
         }

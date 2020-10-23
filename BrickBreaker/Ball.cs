@@ -55,27 +55,30 @@ namespace BrickBreaker
 
             if (ballRec.IntersectsWith(blockRec))
             {
-                if (x < b.x / 2 && ballRight == true)
+                if (y == b.y)
                 {
-                    ballRight = true;
-                    ballUp = false;
+                    ballUp = !ballUp;
                 }
-                else if (x < b.x / 2 && ballRight == false)
-                {
-                    ballRight = false;
-                    ballUp = false;
-                }
-                else if (x > b.x / 2 && ballRight == true)
-                {
-                    ballRight = true;
-                    ballUp = false;
-                }
-                else if (x > b.x / 2 && ballRight == false)
-                {
-                    ballRight = false;
-                    ballUp = false;
-                }
-
+                    if (x < b.x / 2 && ballRight == true)
+                    {
+                        ballRight = true;
+                        ballUp = false;
+                    }
+                    else if (x < b.x / 2 && ballRight == false)
+                    {
+                        ballRight = false;
+                        ballUp = false;
+                    }
+                    else if (x > b.x / 2 && ballRight == true)
+                    {
+                        ballRight = true;
+                        ballUp = false;
+                    }
+                    else if (x > b.x / 2 && ballRight == false)
+                    {
+                        ballRight = false;
+                        ballUp = false;
+                    }
             }
 
             return blockRec.IntersectsWith(ballRec);         
@@ -94,14 +97,49 @@ namespace BrickBreaker
                     ballUp = true;
                 }
 
-                if (pMovingLeft == true)
-                {
-                    ballRight = false;
-                }
-                else
+                // if hits right side of paddle and paddle moving right, go right
+                if (x > p.x + p.width / 2 && pMovingRight == true)
                 {
                     ballRight = true;
                 }
+                // if hits right side of paddle and paddle not moving right, go right
+                else if (x > p.x + p.width / 2 && pMovingRight == false)
+                {
+                    ballRight = true;
+                }
+                // if hits left side of paddle and paddle not moving right, go left
+                else if (x < p.x + p.width / 2 && pMovingRight == false)
+                {
+                    ballRight = false;
+                }
+                // if hits left side of paddle and paddle moving right, go right
+                else if (x < p.x + p.width / 2 && pMovingRight == true)
+                {
+                    ballRight = true;
+                }
+
+                // if hits right side of paddle and paddle not moving left, go right
+                else if (x > p.x + p.width / 2 && pMovingLeft == false)
+                {
+                    ballRight = true;
+                }
+                // if hits right side of paddle and paddle moving left, go left
+                else if (x > p.x + p.width / 2 && pMovingLeft == true)
+                {
+                    ballRight = false;
+                }
+                // if hits left side of paddle and paddle not moving left, go left
+                else if (x < p.x + p.width / 2 && pMovingLeft == false)
+                {
+                    ballRight = false;
+                }
+                // if hits left side of paddle and paddle moving left, go left
+                else if (x < p.x + p.width / 2 && pMovingLeft == true)
+                {
+                    ballRight = false;
+                }
+                
+
             }
         }
 
