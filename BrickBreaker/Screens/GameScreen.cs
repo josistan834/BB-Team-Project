@@ -5,6 +5,7 @@
  *  Project: Brick Breaker
 
  *  Date: Oct, 2020 
+
  */ 
 
 using System;
@@ -86,7 +87,6 @@ namespace BrickBreaker
         public GameScreen()
         {
             InitializeComponent();
-            
             Form1.seagulSound.Stop();
             OnStart();
         }
@@ -429,9 +429,6 @@ namespace BrickBreaker
             score pscore = new score(Convert.ToString(playerScore));
             highScoreList.Add(pscore);
 
-            HighScoreWrite();
-            HighScoreRead();
-
             // Goes to the game over screen
             Form form = this.FindForm();
 
@@ -539,26 +536,24 @@ namespace BrickBreaker
         public static void HighScoreRead()
         {
             // create reader
-            XmlReader reader = XmlReader.Create("highScores.xml");
+            XmlTextReader reader = new XmlTextReader("Resources/highScores.xml");
 
-            // read high score xml file
+            
+
+            
+            //Read the scores
             while (reader.Read())
             {
-                // take high score values from high score xml file
-                if (reader.NodeType == XmlNodeType.Text)
-                {
-                    reader.ReadToNextSibling("score");
-                    string numScore = reader.ReadString();
 
-                    // add score to high score list
-                    score s = new score(numScore);
-                    highScoreList.Add(s);
+                reader.ReadToFollowing("score");
+                string numScore = reader.ReadString();
 
-                    // display scores
-                    scores += numScore + "\n";                    
-                }
+                score s = new score(numScore);
+                highScoreList.Add(s);
+               
             }
 
+            highScoreList.RemoveAt(highScoreList.Count() - 1);
             // remove the lowest high score if there are already 10 scores when adding a new score 
             if (highScoreList.Count > 10)
             {
@@ -571,7 +566,7 @@ namespace BrickBreaker
         public static void HighScoreWrite()
         {
             // create write for xml file
-            XmlWriter writer = XmlWriter.Create("highScores.xml", null);
+            XmlWriter writer = XmlWriter.Create("Resources/highScores.xml", null);
 
             // start writer
             writer.WriteStartElement("Highscores");
@@ -579,7 +574,8 @@ namespace BrickBreaker
             // write every score in high score list
             foreach (score s in highScoreList)
             {
-                writer.WriteElementString("score", s.numScore);
+                 writer.WriteElementString("score", s.numScore);
+ 
             }
 
             // end and close writer

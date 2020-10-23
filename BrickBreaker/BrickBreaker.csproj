@@ -154,9 +154,6 @@
     <Content Include="Resources\level1.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\level3.xml" />
-    <Content Include="Resources\level7.xml" />
-    <Content Include="Resources\level9.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\background1.png" />

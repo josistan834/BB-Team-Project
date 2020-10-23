@@ -16,11 +16,8 @@ namespace BrickBreaker
         {
             InitializeComponent();
 
-            GameScreen.HighScoreWrite();
-            GameScreen.HighScoreRead();
-
-            // display high scores to high score label
-            foreach (score s in GameScreen.highScoreList)
+            List<score> sortedlist = GameScreen.highScoreList.OrderBy(s => s.numScore).ToList();
+            foreach (score s in sortedlist)
             {
                 highscoreLabel.Text += s.numScore + "\n";
             }
