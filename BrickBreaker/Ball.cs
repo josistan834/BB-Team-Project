@@ -55,8 +55,26 @@ namespace BrickBreaker
 
             if (ballRec.IntersectsWith(blockRec))
             {
-                //ball changes up/down direction
-                ballUp = !ballUp;
+                    if (x < b.x / 2 && ballRight == true)
+                    {
+                        ballRight = true;
+                    ballUp = !ballUp;
+                    }
+                    else if (x < b.x / 2 && ballRight == false)
+                    {
+                        ballRight = false;
+                    ballUp = !ballUp;
+                }
+                    else if (x > b.x / 2 && ballRight == true)
+                    {
+                        ballRight = true;
+                    ballUp = !ballUp;
+                }
+                    else if (x > b.x / 2 && ballRight == false)
+                    {
+                        ballRight = false;
+                    ballUp = !ballUp;
+                }
             }
 
             return blockRec.IntersectsWith(ballRec);         
@@ -75,14 +93,49 @@ namespace BrickBreaker
                     ballUp = true;
                 }
 
-                if (pMovingLeft == true)
-                {
-                    ballRight = false;
-                }
-                else
+                // if hits right side of paddle and paddle moving right, go right
+                if (x > p.x + p.width / 2 && pMovingRight == true)
                 {
                     ballRight = true;
                 }
+                // if hits right side of paddle and paddle not moving right, go right
+                else if (x > p.x + p.width / 2 && pMovingRight == false)
+                {
+                    ballRight = true;
+                }
+                // if hits left side of paddle and paddle not moving right, go left
+                else if (x < p.x + p.width / 2 && pMovingRight == false)
+                {
+                    ballRight = false;
+                }
+                // if hits left side of paddle and paddle moving right, go right
+                else if (x < p.x + p.width / 2 && pMovingRight == true)
+                {
+                    ballRight = true;
+                }
+
+                // if hits right side of paddle and paddle not moving left, go right
+                else if (x > p.x + p.width / 2 && pMovingLeft == false)
+                {
+                    ballRight = true;
+                }
+                // if hits right side of paddle and paddle moving left, go left
+                else if (x > p.x + p.width / 2 && pMovingLeft == true)
+                {
+                    ballRight = false;
+                }
+                // if hits left side of paddle and paddle not moving left, go left
+                else if (x < p.x + p.width / 2 && pMovingLeft == false)
+                {
+                    ballRight = false;
+                }
+                // if hits left side of paddle and paddle moving left, go left
+                else if (x < p.x + p.width / 2 && pMovingLeft == true)
+                {
+                    ballRight = false;
+                }
+                
+
             }
         }
 
@@ -93,29 +146,29 @@ namespace BrickBreaker
             {
                 Form1.collisionSound.Play();
                 ballRight = true;
-                if (oppBall == true)
-                {
-                    ballUp = false;
-                }
+                //if (oppBall == true)
+                //{
+                //    ballUp = false;
+                //}
             }
             else if (x >= (UC.Width - size))
             {
                 Form1.collisionSound.Play();
                 ballRight = false;
-                if (oppBall == true)
-                {
-                    ballUp = false;
-                }
+                //if (oppBall == true)
+                //{
+                //    ballUp = false;
+                //}
             }
             // Collision with top wall, goes down
             if (y <= 2)
             {
                 Form1.collisionSound.Play();
                 ballUp = false;
-                if (oppBall == true)
-                {
-                    ballRight = !ballRight;
-                }
+                //if (oppBall == true)
+                //{
+                //    ballRight = !ballRight;
+                //}
             }
         }
 

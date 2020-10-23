@@ -5,6 +5,7 @@
  *  Project: Brick Breaker
 
  *  Date: Oct, 2020 
+
  */ 
 
 using System;
@@ -86,7 +87,6 @@ namespace BrickBreaker
         public GameScreen()
         {
             InitializeComponent();
-            
             Form1.seagulSound.Stop();
             OnStart();
         }
