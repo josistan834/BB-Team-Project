@@ -28,10 +28,12 @@ namespace BrickBreaker
 
         public Form1()
         {
+            //on start load form and high scores
             InitializeComponent();
             GameScreen.HighScoreRead();
         }
 
+        //display the menu screen
         private void Form1_Load(object sender, EventArgs e)
         {
             // Start the program centred on the Menu Screen
@@ -41,6 +43,7 @@ namespace BrickBreaker
             ms.Location = new Point((this.Width - ms.Width) / 2, (this.Height - ms.Height) / 2);
         }
 
+        //if the form is closed update the xml file
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             GameScreen.HighScoreWrite();

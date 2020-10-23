@@ -49,6 +49,7 @@ namespace BrickBreaker
             }
         }
 
+        //logic for ball collisions with blocks
         public bool BlockCollision(Block b)
         {
             Rectangle blockRec = new Rectangle(b.x, b.y, b.width, b.height);
@@ -81,6 +82,7 @@ namespace BrickBreaker
             return blockRec.IntersectsWith(ballRec);         
         }
 
+        //logic for ball collisions with paddle
         public void PaddleCollision(Paddle p, bool pMovingLeft, bool pMovingRight)
         {
             Rectangle ballRec = new Rectangle(x, y, size, size);
@@ -173,6 +175,7 @@ namespace BrickBreaker
             }
         }
 
+        //logic for ball collision with bottom
         public bool BottomCollision(UserControl UC)
         {
             Boolean didCollide = false;
@@ -184,6 +187,8 @@ namespace BrickBreaker
 
             return didCollide;
         }
+
+        //logic for ball collision with powerups
         public void PowerUpBCollision(PowerUps p, Paddle s)
         {
             Rectangle powerRec = new Rectangle(p.x, p.y, p.width, p.height);

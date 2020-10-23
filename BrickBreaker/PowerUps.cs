@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace BrickBreaker
 {
+    //powerups class and properties
     public class PowerUps
     {
         public int x, y, width, height;

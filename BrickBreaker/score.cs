@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace BrickBreaker
 {
+    //score class to store score properties
     public class score
     {
         public string numScore;

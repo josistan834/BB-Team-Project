@@ -7,6 +7,7 @@ using System.Drawing;
 
 namespace BrickBreaker
 {
+    //bricks class with the brick properties
     public class Block
     {
         public int width = 50;

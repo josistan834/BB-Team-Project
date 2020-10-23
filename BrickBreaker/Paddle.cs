@@ -2,6 +2,7 @@
 
 namespace BrickBreaker
 {
+    //paddle class properties and behaviors
     public class Paddle
     {
         public int x, y, width, height, speed;
@@ -17,6 +18,7 @@ namespace BrickBreaker
             colour = _colour;
         }
 
+        //movement behaviour
         public void Move(string direction)
         {
             if (direction == "left")
@@ -28,6 +30,8 @@ namespace BrickBreaker
                 x += speed;
             }
         }
+
+        //when the paddle collides with a powerup
         public void PowerUpCollision(PowerUps p)
         {
 

@@ -12,6 +12,7 @@ namespace BrickBreaker
 {
     public partial class GameOverScreen : UserControl
     {
+        //load game over screen and display highscores
         public GameOverScreen()
         {
             InitializeComponent();
@@ -22,11 +23,14 @@ namespace BrickBreaker
                 highscoreLabel.Text += s.numScore + "\n";
             }
         }
+
+        //close the program on exit
         private void exitButton_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
+        //go to the gamescreen on play again
         private void playButton_Click(object sender, EventArgs e)
         {
             GameScreen gs = new GameScreen();
@@ -38,6 +42,7 @@ namespace BrickBreaker
             gs.Location = new Point((form.Width - gs.Width) / 2, (form.Height - gs.Height) / 2);
         }
 
+        //go to menu screen on menu click
         private void button1_Click(object sender, EventArgs e)
         {
             MenuScreen gs = new MenuScreen();
@@ -49,6 +54,7 @@ namespace BrickBreaker
             gs.Location = new Point((form.Width - gs.Width) / 2, (form.Height - gs.Height) / 2);
         }
 
+        //when you select the exit button
         private void exitButton_Enter(object sender, EventArgs e)
         {
             exitButton.BackColor = Color.MediumSpringGreen;
@@ -56,6 +62,7 @@ namespace BrickBreaker
             button1.BackColor = Color.PaleTurquoise;
         }
 
+        //when you select the menu button
         private void button1_Enter(object sender, EventArgs e)
         {
             exitButton.BackColor = Color.PaleTurquoise;
@@ -63,6 +70,7 @@ namespace BrickBreaker
             button1.BackColor = Color.MediumSpringGreen;
         }
 
+        //when you select the play button
         private void playButton_Enter(object sender, EventArgs e)
         {
             exitButton.BackColor = Color.PaleTurquoise;

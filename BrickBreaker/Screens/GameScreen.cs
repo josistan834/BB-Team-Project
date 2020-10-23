@@ -32,8 +32,7 @@ namespace BrickBreaker
 
         //player1 button control keys - DO NOT CHANGE
 
-        Boolean leftArrowDown, rightArrowDown, pArrowDown, upArrowDown;
-        Boolean stop = false;
+        Boolean leftArrowDown, rightArrowDown, pArrowDown;
 
 
 
@@ -86,6 +85,7 @@ namespace BrickBreaker
 
         #endregion
 
+        //load game screen and stop menu sound then run start method
         public GameScreen()
         {
             InitializeComponent();
@@ -94,7 +94,7 @@ namespace BrickBreaker
         }
 
 
-
+        //method to configure setup on start
         public void OnStart()
         {
             //level
@@ -141,6 +141,7 @@ namespace BrickBreaker
             gameTimer.Enabled = true;
         }
 
+        //Ball collisions and position
         public void CalemMethod()
         {
             // Move ball
@@ -194,7 +195,6 @@ namespace BrickBreaker
                 if (ball.BlockCollision(b))
                 {
                     b.hp--;
-                    BlockColour();
                     if (b.hp > 0) // player score increases when the ball hits a block
                     {
                         
@@ -210,7 +210,7 @@ namespace BrickBreaker
                         blocks.Remove(b);
                     }
 
-                    
+                    //generate random powerup and run powerup method
                     powerDec = randJord.Next(1, 100);
                     if (powerDec > 1 && powerDec < 100)
                     {
@@ -229,7 +229,7 @@ namespace BrickBreaker
             #endregion
         }
 
-
+        //if a key is pressed
         private void GameScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             //player 1 button presses
@@ -241,18 +241,15 @@ namespace BrickBreaker
                 case Keys.Right:
                     rightArrowDown = true;
                     break;
-
                 case Keys.P:
                     pArrowDown = true;
-                    break;
-                case Keys.Up:
-                    upArrowDown = true;
                     break;
                 default:
                     break;
             }
         }
 
+        //if a key is relassed
         private void GameScreen_KeyUp(object sender, KeyEventArgs e)
         {
             //player 1 button releases
@@ -267,21 +264,16 @@ namespace BrickBreaker
                 case Keys.P:
                     pArrowDown = false;
                     break;
-                case Keys.Up:
-                    upArrowDown = false;
-
-                    break;
                 default:
                     break;
             }
         }
 
-
+        //when the pause button is pushed
         public void pause()
         {
             pArrowDown = false;
             gameTimer.Stop();
-            stop = true;
             label1.Visible = true;
             playButton.Visible = true;
             exitButton.Visible = true;
@@ -289,11 +281,11 @@ namespace BrickBreaker
 
         }
 
-
+        //powerup method
         public void JordanMethod()
         {
 
-            powerPick = randJord.Next(1, 8);
+            powerPick = randJord.Next(1,10);
             if (powerPick == 1)
 
             {
@@ -343,6 +335,7 @@ namespace BrickBreaker
             }
         }
 
+        //when the playagain button is pushed
         private void playButton_Click(object sender, EventArgs e)
         {
             label1.Visible = false;
@@ -352,17 +345,20 @@ namespace BrickBreaker
             this.Focus();
         }
 
+        //when the exit button is pushed close the program
         private void exitButton_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
+        //when the play button is selected
         private void playenter(object sender, EventArgs e)
         {
             playButton.BackColor = Color.MediumSpringGreen;
             exitButton.BackColor = Color.PaleTurquoise;
         }
 
+        //when the exit button is selected
         private void exitenter(object sender, EventArgs e)
         {
           
@@ -370,6 +366,7 @@ namespace BrickBreaker
             playButton.BackColor = Color.PaleTurquoise;
         }
 
+        //runs on each frame
         private void gameTimer_Tick(object sender, EventArgs e)
         {
             lifeLab.Text = playerLives + "";
@@ -397,7 +394,7 @@ namespace BrickBreaker
             // Move the paddle
             if (leftArrowDown && paddle.x > 0)
             {
-                if (Paddle.opp == true)
+                if (Paddle.opp == true && paddle.x < (this.Width - paddle.width))
                 {
                     paddle.Move("right");
                 }
@@ -409,7 +406,7 @@ namespace BrickBreaker
             }
             if (rightArrowDown && paddle.x < (this.Width - paddle.width))
             {
-                if (Paddle.opp == true)
+                if (Paddle.opp == true && paddle.x > 0)
                 {
                     paddle.Move("left");
                 }
@@ -437,6 +434,7 @@ namespace BrickBreaker
             Refresh();
         }
 
+        //runs when the game ends
         public void OnEnd()
         {
             // convert player score to a string for the xml file and add to list
@@ -454,6 +452,7 @@ namespace BrickBreaker
             form.Controls.Remove(this);
         }
 
+        //method for drawing everything on the screen 
         public void GameScreen_Paint(object sender, PaintEventArgs e)
         {
             // Draws paddle
@@ -539,14 +538,23 @@ namespace BrickBreaker
                 {
                     e.Graphics.FillEllipse(oppositeBallBrush, p.x, p.y, p.width, p.height);
                 }
+                else if (p.power == "bigBall")
+                {
+                    e.Graphics.FillEllipse(bigBrush, p.x, p.y, p.width, p.height);
+                }
+                else if (p.power == "smallBall")
+                {
+                    e.Graphics.FillEllipse(smallBallBrush, p.x, p.y, p.width, p.height);
+                }
             }
 
 
             // Draws ball
-            e.Graphics.DrawImage(bubbleball, ball.x, ball.y, ball.size +5, ball.size +5);
+            e.Graphics.DrawImage(bubbleball, ball.x, ball.y, Ball.size +5, Ball.size +5);
 
         }
 
+        //read the highscores xml file and put it into the highscores list
         public static void HighScoreRead()
         {
             // create reader
@@ -577,6 +585,7 @@ namespace BrickBreaker
             reader.Close();
         }
 
+        //write to the highscores xml file to update it
         public static void HighScoreWrite()
         {
             // create write for xml file
@@ -597,34 +606,7 @@ namespace BrickBreaker
             writer.Close();
         }
 
-        public void BlockColour()
-        {
-            // change block colour based on the block's health
-            foreach (Block b in blocks)
-            {
-                if (b.hp == 1)
-                {
-                    b.colour = Color.LightYellow;
-                }
-                else if (b.hp == 2)
-                {
-                    b.colour = Color.Yellow;
-                }
-                else if (b.hp == 3)
-                {
-                    b.colour = Color.OrangeRed;
-                }
-                else if (b.hp == 4)
-                {
-                    b.colour = Color.Orange;
-                }
-                else if (b.hp == 5)
-                {
-                    b.colour = Color.DarkOrange;
-                }
-            }
-        }
-
+        //makes level by reading the xml file
         public void levelMaker()
         {
             // variables for block x and y values
