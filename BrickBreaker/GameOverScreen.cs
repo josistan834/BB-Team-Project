@@ -15,6 +15,12 @@ namespace BrickBreaker
         public GameOverScreen()
         {
             InitializeComponent();
+
+            List<score> sortedlist = GameScreen.highScoreList.OrderBy(s => s.numScore).ToList();
+            foreach (score s in sortedlist)
+            {
+                highscoreLabel.Text += s.numScore + "\n";
+            }
         }
         private void exitButton_Click(object sender, EventArgs e)
         {

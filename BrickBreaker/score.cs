@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BrickBreaker
 {
-    class score
+    public class score
     {
         public string numScore;
 

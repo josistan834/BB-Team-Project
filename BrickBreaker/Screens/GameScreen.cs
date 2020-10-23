@@ -5,6 +5,7 @@
  *  Project: Brick Breaker
 
  *  Date: Oct, 2020 
+
  */ 
 
 using System;
@@ -40,7 +41,8 @@ namespace BrickBreaker
         int level;
         public static int paddleSpeed;
         public static int playerLives;
-        int playerScore; // many need to change if player score gets too high
+        public static string scores;
+        int playerScore; 
 
         // ball values
         int xSpeed = 6;
@@ -69,9 +71,11 @@ namespace BrickBreaker
         SolidBrush oppositeBallBrush = new SolidBrush(Color.Aqua);
         SolidBrush bigBrush = new SolidBrush(Color.Black);
         SolidBrush smallBallBrush = new SolidBrush(Color.DarkOrange);
-
+        Image bubbleball = Properties.Resources.bubbleManSupream;
+        Image paddleCrab = Properties.Resources.carbPaddle;
+        
         //List that will build highscores using a class to then commit them to a XML file
-        List<score> highScoreList = new List<score>();
+        public static List<score> highScoreList = new List<score>();
 
         // Jordan Var
 
@@ -90,20 +94,11 @@ namespace BrickBreaker
         }
 
 
-        public void DeclanMethod()
-        {
-            // Check if ball has collided with any blocks
-            
-            if (playerLives == 0)
-            {
-                gameTimer.Enabled = false;
-                OnEnd();
-            }
-        }
-
 
         public void OnStart()
         {
+            //level
+            level = 1;
             //set life counter
             playerLives = 3;
 
@@ -140,7 +135,7 @@ namespace BrickBreaker
             powerPick = randJord.Next(1, 3);
 
 
-            levelOne(); // call level one method
+            levelMaker(); // call level maker method
 
             // start the game engine loop
             gameTimer.Enabled = true;
@@ -158,6 +153,7 @@ namespace BrickBreaker
             // Check for ball hitting bottom of screen
             if (ball.BottomCollision(this))
             {
+                Form1.loseSound.Play();
 
                 playerLives--;
                 paddle.width = 80;
@@ -208,6 +204,7 @@ namespace BrickBreaker
 
                     else  // remove block from screen if its health is zero
                     {
+                        Form1.breakBrick.Play();
                         playerScore = playerScore + 100; // update score
                         scoreLab.Text = playerScore + ""; // display updated score
                         blocks.Remove(b);
@@ -219,10 +216,11 @@ namespace BrickBreaker
                     {
                         JordanMethod();
                     }
-                    if (blocks.Count == 0)
+                    if (blocks.Count == 0 && level < 10)
                     {
-                        gameTimer.Enabled = false;
-                        OnEnd();
+                        Form1.winSound.PlaySync();
+                        level++;
+                        levelMaker(); // make next level
                     }
 
                     break;  
@@ -249,7 +247,6 @@ namespace BrickBreaker
                     break;
                 case Keys.Up:
                     upArrowDown = true;
-
                     break;
                 default:
                     break;
@@ -362,14 +359,15 @@ namespace BrickBreaker
 
         private void playenter(object sender, EventArgs e)
         {
-            exitButton.BackColor = Color.MediumSpringGreen;
-            playButton.BackColor = Color.PaleTurquoise;
+            playButton.BackColor = Color.MediumSpringGreen;
+            exitButton.BackColor = Color.PaleTurquoise;
         }
 
         private void exitenter(object sender, EventArgs e)
         {
-            playButton.BackColor = Color.MediumSpringGreen;
-            exitButton.BackColor = Color.PaleTurquoise;
+          
+            exitButton.BackColor = Color.MediumSpringGreen;
+            playButton.BackColor = Color.PaleTurquoise;
         }
 
         private void gameTimer_Tick(object sender, EventArgs e)
@@ -395,7 +393,6 @@ namespace BrickBreaker
 
             #endregion
 
-            DeclanMethod();
 
             // Move the paddle
             if (leftArrowDown && paddle.x > 0)
@@ -442,8 +439,9 @@ namespace BrickBreaker
 
         public void OnEnd()
         {
-            HighScoreRead();
-            HighScoreWrite();
+            // convert player score to a string for the xml file and add to list
+            score pscore = new score(Convert.ToString(playerScore));
+            highScoreList.Add(pscore);
 
             // Goes to the game over screen
             Form form = this.FindForm();
@@ -460,7 +458,7 @@ namespace BrickBreaker
         {
             // Draws paddle
             paddleBrush.Color = paddle.colour;
-            e.Graphics.FillRectangle(paddleBrush, paddle.x, paddle.y, paddle.width, paddle.height);
+            e.Graphics.DrawImage(paddleCrab, paddle.x, paddle.y, paddle.width, paddle.height + 30);
 
             // Draws blocks
             foreach (Block b in blocks)
@@ -484,6 +482,26 @@ namespace BrickBreaker
                 else if (b.hp == 5)
                 {
                     b.colour = Color.DarkOrange;
+                }
+                else if (b.hp == 6)
+                {
+                    b.colour = Color.PaleTurquoise;
+                }
+                else if (b.hp == 7)
+                {
+                    b.colour = Color.DarkCyan;
+                }
+                else if (b.hp == 8)
+                {
+                    b.colour = Color.DarkBlue;
+                }
+                else if (b.hp == 9)
+                {
+                    b.colour = Color.DeepPink;
+                }
+                else if (b.hp == 10)
+                {
+                    b.colour = Color.Pink;
                 }
                 blockBrush.Color = b.colour;
 
@@ -525,32 +543,31 @@ namespace BrickBreaker
 
 
             // Draws ball
-            e.Graphics.FillRectangle(ballBrush, ball.x, ball.y, Ball.size, Ball.size);
+            e.Graphics.DrawImage(bubbleball, ball.x, ball.y, ball.size +5, ball.size +5);
 
         }
 
-        public void HighScoreRead()
+        public static void HighScoreRead()
         {
             // create reader
             XmlTextReader reader = new XmlTextReader("Resources/highScores.xml");
 
-            // read high score xml file
+            
+
+            
+            //Read the scores
             while (reader.Read())
             {
-                // take high score values from high score xml file
-                if (reader.NodeType == XmlNodeType.Text)
-                {
-                    reader.ReadToNextSibling("score");
-                    string numScore = reader.ReadString();
 
-                    // add score to high score list
-                    score s = new score(numScore);
-                    highScoreList.Add(s);
+                reader.ReadToFollowing("score");
+                string numScore = reader.ReadString();
 
-                    //highScoreLabel.Text += s.numScore + "\n";
-                }
+                score s = new score(numScore);
+                highScoreList.Add(s);
+               
             }
 
+            highScoreList.RemoveAt(highScoreList.Count() - 1);
             // remove the lowest high score if there are already 10 scores when adding a new score 
             if (highScoreList.Count > 10)
             {
@@ -560,10 +577,10 @@ namespace BrickBreaker
             reader.Close();
         }
 
-        public void HighScoreWrite()
+        public static void HighScoreWrite()
         {
             // create write for xml file
-            XmlWriter writer = XmlWriter.Create("highScores.xml", null);
+            XmlWriter writer = XmlWriter.Create("Resources/highScores.xml", null);
 
             // start writer
             writer.WriteStartElement("Highscores");
@@ -571,11 +588,8 @@ namespace BrickBreaker
             // write every score in high score list
             foreach (score s in highScoreList)
             {
-                writer.WriteStartElement("playerScore");
-
-                writer.WriteElementString("score", s.numScore);
-
-                writer.WriteEndElement();
+                 writer.WriteElementString("score", s.numScore);
+ 
             }
 
             // end and close writer
@@ -611,11 +625,8 @@ namespace BrickBreaker
             }
         }
 
-        public void levelOne()
+        public void levelMaker()
         {
-            // current level
-            level = 1;
-
             // variables for block x and y values
             string blockX;
             string blockY;

@@ -22,10 +22,14 @@ namespace BrickBreaker
         public static SoundPlayer seagulSound = new SoundPlayer(Properties.Resources.seagul);
         public static SoundPlayer collisionSound = new SoundPlayer(Properties.Resources.collision);
         public static SoundPlayer breakBrick = new SoundPlayer(Properties.Resources.score);
+        public static SoundPlayer loseSound = new SoundPlayer(Properties.Resources.lose);
+        public static SoundPlayer winSound = new SoundPlayer(Properties.Resources.brickBreak);
+
 
         public Form1()
         {
             InitializeComponent();
+            GameScreen.HighScoreRead();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -35,6 +39,11 @@ namespace BrickBreaker
             this.Controls.Add(ms);
 
             ms.Location = new Point((this.Width - ms.Width) / 2, (this.Height - ms.Height) / 2);
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            GameScreen.HighScoreWrite();
         }
     }
 }
