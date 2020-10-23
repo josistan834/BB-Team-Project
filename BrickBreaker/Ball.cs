@@ -55,30 +55,26 @@ namespace BrickBreaker
 
             if (ballRec.IntersectsWith(blockRec))
             {
-                if (y == b.y)
-                {
-                    ballUp = !ballUp;
-                }
                     if (x < b.x / 2 && ballRight == true)
                     {
                         ballRight = true;
-                        ballUp = false;
+                    ballUp = !ballUp;
                     }
                     else if (x < b.x / 2 && ballRight == false)
                     {
                         ballRight = false;
-                        ballUp = false;
-                    }
+                    ballUp = !ballUp;
+                }
                     else if (x > b.x / 2 && ballRight == true)
                     {
                         ballRight = true;
-                        ballUp = false;
-                    }
+                    ballUp = !ballUp;
+                }
                     else if (x > b.x / 2 && ballRight == false)
                     {
                         ballRight = false;
-                        ballUp = false;
-                    }
+                    ballUp = !ballUp;
+                }
             }
 
             return blockRec.IntersectsWith(ballRec);         
