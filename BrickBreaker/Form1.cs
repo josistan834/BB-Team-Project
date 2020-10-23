@@ -29,6 +29,7 @@ namespace BrickBreaker
         public Form1()
         {
             InitializeComponent();
+            GameScreen.HighScoreRead();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -42,7 +43,7 @@ namespace BrickBreaker
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            //GameScreen.HighScoreWrite();
+            GameScreen.HighScoreWrite();
         }
     }
 }
