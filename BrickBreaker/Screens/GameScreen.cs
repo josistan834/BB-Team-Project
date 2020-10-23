@@ -164,6 +164,7 @@ namespace BrickBreaker
                 paddle.speed = 8;
                 ball.xSpeed = 6;
                 ball.ySpeed = 6;
+                Ball.size = 20;
                 Paddle.opp = false;
                 Ball.oppBall = false;
                  // display updated life count
