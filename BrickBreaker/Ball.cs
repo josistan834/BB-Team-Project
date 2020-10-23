@@ -6,7 +6,8 @@ namespace BrickBreaker
 {
     public class Ball
     {
-        public int x, y, xSpeed, ySpeed, size;
+        public int x, y, xSpeed, ySpeed;
+        public static int size;
         public Boolean ballRight, ballUp;
         public Color colour;
         public static bool oppBall = false;
@@ -148,6 +149,22 @@ namespace BrickBreaker
                     ySpeed += 2;
                     oppBall = true;
                     p.x = 2000;
+                }
+            }
+            else if (p.power == "bigBall")
+            {
+                if (paddleRec.IntersectsWith(powerRec))
+                {
+                    size = size * 2;
+                    p.x = 2000;
+                }
+                else if (p.power == "smallBall")
+                {
+                    if (paddleRec.IntersectsWith(powerRec))
+                    {
+                        size = size / 2;
+                        p.x = 2000;
+                    }
                 }
             }
         }
