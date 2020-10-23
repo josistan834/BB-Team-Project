@@ -41,7 +41,7 @@ namespace BrickBreaker
         public static int paddleSpeed;
         public static int playerLives;
         public static string scores;
-        int playerScore; // many need to change if player score gets too high
+        int playerScore; 
 
         // ball values
         int xSpeed = 6;
@@ -133,7 +133,7 @@ namespace BrickBreaker
             powerPick = randJord.Next(1, 3);
 
 
-            levelOne(); // call level one method
+            levelMaker(); // call level maker method
 
             // start the game engine loop
             gameTimer.Enabled = true;
@@ -217,7 +217,7 @@ namespace BrickBreaker
                     {
                         Form1.winSound.PlaySync();
                         level++;
-                        levelOne();
+                        levelMaker(); // make next level
                     }
 
                     break;  
@@ -244,7 +244,6 @@ namespace BrickBreaker
                     break;
                 case Keys.Up:
                     upArrowDown = true;
-
                     break;
                 default:
                     break;
@@ -426,6 +425,7 @@ namespace BrickBreaker
 
         public void OnEnd()
         {
+            // convert player score to a string for the xml file and add to list
             score pscore = new score(Convert.ToString(playerScore));
             highScoreList.Add(pscore);
 
@@ -553,8 +553,9 @@ namespace BrickBreaker
                     // add score to high score list
                     score s = new score(numScore);
                     highScoreList.Add(s);
-                    scores += numScore + "\n";
-                     
+
+                    // display scores
+                    scores += numScore + "\n";                    
                 }
             }
 
@@ -578,11 +579,7 @@ namespace BrickBreaker
             // write every score in high score list
             foreach (score s in highScoreList)
             {
-                writer.WriteStartElement("playerScore");
-
                 writer.WriteElementString("score", s.numScore);
-
-                writer.WriteEndElement();
             }
 
             // end and close writer
@@ -618,11 +615,8 @@ namespace BrickBreaker
             }
         }
 
-        public void levelOne()
+        public void levelMaker()
         {
-            // current level
-            
-
             // variables for block x and y values
             string blockX;
             string blockY;

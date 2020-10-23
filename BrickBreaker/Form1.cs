@@ -42,7 +42,7 @@ namespace BrickBreaker
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            //GameScreen.HighScoreWrite();
+           //GameScreen.HighScoreWrite();
         }
     }
 }
