@@ -69,9 +69,11 @@ namespace BrickBreaker
         SolidBrush fastBallBrush = new SolidBrush(Color.Blue);
         SolidBrush oppositeBrush = new SolidBrush(Color.Pink);
         SolidBrush oppositeBallBrush = new SolidBrush(Color.Aqua);
-
+        SolidBrush bigBrush = new SolidBrush(Color.Black);
+        SolidBrush smallBallBrush = new SolidBrush(Color.DarkOrange);
         Image bubbleball = Properties.Resources.bubbleManSupream;
         Image paddleCrab = Properties.Resources.carbPaddle;
+        
         //List that will build highscores using a class to then commit them to a XML file
         public static List<score> highScoreList = new List<score>();
 
@@ -158,14 +160,15 @@ namespace BrickBreaker
                 paddle.speed = 8;
                 ball.xSpeed = 6;
                 ball.ySpeed = 6;
+                Ball.size = 20;
                 Paddle.opp = false;
                 Ball.oppBall = false;
-                lifeLab.Text = playerLives + ""; // display updated life count
+                 // display updated life count
 
                 //Move paddle to middle
                 paddle.x = (this.Width / 2 - paddle.width);
                 // Moves the ball back to origin
-                ball.x = ((paddle.x - (ball.size / 2)) + (paddle.width / 2));
+                ball.x = ((paddle.x - (Ball.size / 2)) + (paddle.width / 2));
                 ball.y = (this.Height - paddle.height) - 85;
                 ball.ballUp = true;               
                 Refresh();
@@ -328,6 +331,16 @@ namespace BrickBreaker
                 PowerUps oppositeBall = new PowerUps(ball.x, ball.y, 20, 20, "oppositeBall");
                 powers.Add(oppositeBall);
             }
+            else if (powerPick == 8)
+            {
+                PowerUps bigBall = new PowerUps(ball.x, ball.y, 20, 20, "bigBall");
+                powers.Add(bigBall);
+            }
+            else if (powerPick == 9)
+            {
+                PowerUps smallBall = new PowerUps(ball.x, ball.y, 20, 20, "smallBall");
+                powers.Add(smallBall);
+            }
         }
 
         private void playButton_Click(object sender, EventArgs e)
@@ -359,6 +372,7 @@ namespace BrickBreaker
 
         private void gameTimer_Tick(object sender, EventArgs e)
         {
+            lifeLab.Text = playerLives + "";
             #region PowerUp
             // power ups fall
             for (int i = 0; i < powers.Count(); i++)
