@@ -76,9 +76,10 @@
             this.playButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
             this.playButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.playButton.Font = new System.Drawing.Font("Tahoma", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.playButton.Location = new System.Drawing.Point(205, 241);
+            this.playButton.Location = new System.Drawing.Point(256, 301);
+            this.playButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.playButton.Name = "playButton";
-            this.playButton.Size = new System.Drawing.Size(193, 77);
+            this.playButton.Size = new System.Drawing.Size(241, 96);
             this.playButton.TabIndex = 2;
             this.playButton.Text = "Play";
             this.playButton.UseVisualStyleBackColor = false;
@@ -92,9 +93,10 @@
             this.exitButton.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.exitButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.exitButton.Font = new System.Drawing.Font("Tahoma", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.exitButton.Location = new System.Drawing.Point(460, 241);
+            this.exitButton.Location = new System.Drawing.Point(575, 301);
+            this.exitButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.exitButton.Name = "exitButton";
-            this.exitButton.Size = new System.Drawing.Size(193, 77);
+            this.exitButton.Size = new System.Drawing.Size(241, 96);
             this.exitButton.TabIndex = 3;
             this.exitButton.Text = "Exit";
             this.exitButton.UseVisualStyleBackColor = false;
@@ -108,10 +110,10 @@
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("Comic Sans MS", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.DarkBlue;
-            this.label1.Location = new System.Drawing.Point(333, 88);
+            this.label1.Location = new System.Drawing.Point(416, 110);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(185, 67);
+            this.label1.Size = new System.Drawing.Size(229, 84);
             this.label1.TabIndex = 4;
             this.label1.Text = "Paused";
             this.label1.Visible = false;
@@ -122,10 +124,10 @@
             this.lifeLab.BackColor = System.Drawing.Color.Transparent;
             this.lifeLab.Font = new System.Drawing.Font("Comic Sans MS", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lifeLab.ForeColor = System.Drawing.Color.DarkBlue;
-            this.lifeLab.Location = new System.Drawing.Point(793, 404);
+            this.lifeLab.Location = new System.Drawing.Point(991, 505);
             this.lifeLab.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lifeLab.Name = "lifeLab";
-            this.lifeLab.Size = new System.Drawing.Size(58, 67);
+            this.lifeLab.Size = new System.Drawing.Size(72, 84);
             this.lifeLab.TabIndex = 5;
             this.lifeLab.Text = "0";
             this.lifeLab.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -136,16 +138,16 @@
             this.scoreLab.BackColor = System.Drawing.Color.Transparent;
             this.scoreLab.Font = new System.Drawing.Font("Comic Sans MS", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.scoreLab.ForeColor = System.Drawing.Color.DarkBlue;
-            this.scoreLab.Location = new System.Drawing.Point(2, 404);
+            this.scoreLab.Location = new System.Drawing.Point(2, 505);
             this.scoreLab.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.scoreLab.Name = "scoreLab";
-            this.scoreLab.Size = new System.Drawing.Size(116, 67);
+            this.scoreLab.Size = new System.Drawing.Size(146, 84);
             this.scoreLab.TabIndex = 6;
             this.scoreLab.Text = "100";
             // 
             // GameScreen
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.BackgroundImage = global::BrickBreaker.Properties.Resources.background1;
@@ -156,8 +158,9 @@
             this.Controls.Add(this.exitButton);
             this.Controls.Add(this.playButton);
             this.DoubleBuffered = true;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "GameScreen";
-            this.Size = new System.Drawing.Size(853, 541);
+            this.Size = new System.Drawing.Size(1066, 676);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.GameScreen_Paint);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.GameScreen_KeyUp);
             this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.GameScreen_PreviewKeyDown);
