@@ -15,9 +15,9 @@ namespace BrickBreaker
         public GameOverScreen()
         {
             InitializeComponent();
-            
-            //GameScreen.highScoreList.Sort();
-            foreach (score s in GameScreen.highScoreList)
+
+            List<score> sortedlist = GameScreen.highScoreList.OrderBy(s => s.numScore).ToList();
+            foreach (score s in sortedlist)
             {
                 highscoreLabel.Text += s.numScore + "\n";
             }
